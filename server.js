@@ -5,7 +5,7 @@ const PORT = 9999
 
 let pool = new pg.Pool({
     host: 'localhost',
-    user: 'cs304',
+    user: 'postgres',
     password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
@@ -70,7 +70,7 @@ app.post('/api/animals', function (req, res) {
 
 app.post('/api/customers/signup', function (req, res) {
   const { custid, name, address, pnum } = req.body;
-
+  console.log(`insert into customer values(${custid}, \'${name}\', \'${address}\', \'${pnum}\')`)
   // res.status(200).send(custid)
   pool.connect((err, db, done) => {
       if (err) {
@@ -92,6 +92,7 @@ app.post('/api/customers/signup', function (req, res) {
 })
 /* hi baby */
 
+
 app.post('/api/customers/login', function (req, res) {
     console.log('request body: ' + req.body.custid);
     let custid = req.body.custid
@@ -109,9 +110,7 @@ app.post('/api/customers/login', function (req, res) {
                 if (table.rowCount === 0)
                     res.send(500, err)
                 else {
-                    // console.table(table)
                     res.status(200).send(custid)
-
                 }
             })
         }
@@ -133,27 +132,30 @@ app.get('/api/customers', (req, res) => {
 })
 
 // POST CUSTOMERS
-app.post('/api/customers', function (req, res) {
-    var fname = req.body.fname
-    var addr = req.body.address
-    var phone = req.body.phone
+app.post('/api/customers/add', function (req, res) {
+    const { custid, name, address, pnum} = req.body
+
+    let found = false;
 
     pool.connect((err, db, done) => {
-        if (err)
-            return console.error('error fetching data\n' + err)
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
         else {
-          db.query("select * from animal", (err, table) => {
-            if (err)
-                return console.log(err)
-            else {
-                console.table(table)
-                console.log('connection success')
-
-            }
-          })
+            console.log(`INSERT INTO customer VALUES (${custid},\'${name}\',\'${address}\',\'${pnum}\')`)
+            db.query(`INSERT INTO customer VALUES (${custid},\'${name}\',\'${address}\',\'${pnum}\')`, (err, table) => {
+                if (err) {
+                    console.log('customer already exists!');
+                    res.status(400).send('customer already exists!');
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send(true);
+                }
+            });
         }
     })
-})
+});
 
 // member
 // app.put

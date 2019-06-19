@@ -1,28 +1,43 @@
 import React, { Component } from 'react'
 import { Grid, Header, Form, FormGroup, Button, Table } from 'semantic-ui-react';
-
+import axios from 'axios'
 export default class TTrackByPayment extends Component {
 
-  makeFetch(data) {
-    console.log(data);
-    var request = new Request('http://localhost:3000/div-payment-method', {
-        method: 'POST',
-        header: new Headers({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify(data)
-    });
-    fetch(request)
-        .then(response => {
-            if (response.status === 200) {
-                console.log(response)
-                return response;
-            } else {
-                throw new Error('Something went wrong on api server!');
-            }
-        }).catch(error => {
-            console.error(error);
-        });
+    makeFetch = async (data) => {
+        await axios.post('/api/div/payment-method')
+            .then(res => {
+                if (res.status === 200) {
+                    /*do something wih response.json()*/
+                    // console.log(response)
+                    // return response.json();
+                } if (res.status === 500) {
+                    alert('server side error')
+                } else if (res.status === 400) {
+                    alert('client side error')
+                }
+            }).catch(error => {
+                console.error(error);
+            });
 
-}
+    }
+    makeOpts() {
+        let opts = {
+            visa: '',
+            mc: '',
+            debit: '',
+            cash: '',
+        }
+        if (this.state.visa) {
+            opts.visa = "Visa"
+        } if (this.state.mc) {
+            opts.visa = "MasterCard"
+        } if (this.state.debit) {
+            opts.visa = "Debit"
+        } if (this.state.cash) {
+            opts.visa = "Cash"
+        }
+        this.makeFetch(opts);
+    }
     state = {
         visa: false,
         mc: false,
@@ -50,7 +65,7 @@ export default class TTrackByPayment extends Component {
             <Grid>
                 <Grid.Row centered>
                     <Form>
-                    <Header> Find Customers Who Only Pay With..</Header>
+                        <Header> Find Customers Who Only Pay With..</Header>
                         <FormGroup>
                             <Form.Field>
                                 <label>Visa</label>
@@ -89,36 +104,36 @@ export default class TTrackByPayment extends Component {
                                     onClick={this.toggleCash} />
                             </Form.Field>
                         </FormGroup>
-                        <Button onClick={() => this.makeFetch(this.state)}> Find Customers </Button>
+                        <Button onClick={() => this.makeOpts}> Find Customers </Button>
                     </Form>
                 </Grid.Row>
                 <Table celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>CustID</Table.HeaderCell>
-                <Table.HeaderCell> Name </Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-        
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>
-                  1
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>CustID</Table.HeaderCell>
+                            <Table.HeaderCell> Name </Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        <Table.Row>
+                            <Table.Cell>
+                                1
                 </Table.Cell>
-                <Table.Cell>sum ting wong</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>3</Table.Cell>
-                <Table.Cell>wit mai dik</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>8</Table.Cell>
-                <Table.Cell>it miss u</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
+                            <Table.Cell>sum ting wong</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                            <Table.Cell>3</Table.Cell>
+                            <Table.Cell>wit mai dik</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                            <Table.Cell>8</Table.Cell>
+                            <Table.Cell>it miss u</Table.Cell>
+                        </Table.Row>
+                    </Table.Body>
+                </Table>
             </Grid>
-           
+
         )
     }
 }

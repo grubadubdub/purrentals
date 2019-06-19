@@ -4,7 +4,10 @@ import axios from 'axios';
 import { Link } from "react-router-dom";
 
 export default class EmpLogin extends Component {
-    state = { empid: 'EmpID' }
+    constructor(props) {
+        super(props);
+        this.state = { empid: 'EmpID' }
+    }
 
     getID = (e) => {
         this.setState({ [e.target.name]: e.target.value });

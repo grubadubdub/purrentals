@@ -80,7 +80,7 @@ class Posting extends Component {
                                 {animals[i].diet}
                             </Item.Description>
                             <Item.Extra>
-                                <Label>Feathery uwu</Label>
+                                <Label>{animals[i].type_of_clinic}</Label>
                                 <Button primary floated='left'>
                                     Rent
                       <Icon name='right chevron' />

@@ -1,32 +1,33 @@
 import React, { Component } from "react";
 import { Grid, Form, FormField, Label, Header, FormGroup, Button, Table } from "semantic-ui-react";
-
+import axios from 'axios'
 export default class TSpecial extends Component {
-  makeFetch(data) {
-    console.log(data);
-    var request = new Request('http://localhost:3000/rental-between-dates', {
-      method: 'POST',
-      header: new Headers({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(data)
-    });
-    fetch(request)
-      .then(response => {
-        if (response.status === 200) {
-          console.log(response)
-          return response;
-        } else {
-          throw new Error('Something went wrong on api server!');
-        }
-      }).catch(error => {
-        console.error(error);
-      });
+  constructor(props) {
+    super(props);
+    this.state = {
+      custid: null,
+      start: null,
+      end: null,
+    }
+  }
+  makeFetch = async (data) => {
+    await axios.post('/api/rental-between-dates')
+        .then(res => {
+            if (res.status === 200) {
+                /*do something wih response.json()*/
+                // console.log(response)
+                // return response.json();
+            } if (res.status === 500) {
+                alert('server side error')
+            } else if (res.status === 400) {
+                alert('client side error')
+            }
+        }).catch(error => {
+            console.error(error);
+        });
 
-  }
-  state = {
-    custid: null,
-    start: null,
-    end: null,
-  }
+}
+
   handleTextChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }

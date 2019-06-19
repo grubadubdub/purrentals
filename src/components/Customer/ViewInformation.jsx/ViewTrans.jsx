@@ -10,7 +10,7 @@ export default class ViewTrans extends Component {
     }
 
     componentDidMount() {
-        fetch('/customer-transactions')
+        fetch('/customer-transactions', this.state.custid)
             .then(response => {
                 if (response.status === 200) {
                     return response.json();

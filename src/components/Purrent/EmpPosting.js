@@ -49,47 +49,47 @@ export default class EmpPosting extends Component {
         }
     ]
 
-    componentDidMount() {
-        fetch('/api/animals')
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(anims => this.setState({ animals: anims.rows }))
-                } else {
-                    alert('something went wrong loading animals')
-                }
-            })
-    }
-    createItem = () => {
-        let animals = this.state.animals
-        if (animals.length > 1) {
-            let items = []
-            for (var i = 0, len = animals.length; i < len; i++) {
-                items.push(
-                    <Item key={animals[i].id}>
-                        <Item.Content>
-                            <Item.Header as='a'>
-                                {animals[i].name}
-                            </Item.Header>
-                            <Item.Description>
-                                {animals[i].diet}
-                            </Item.Description>
-                            <Item.Extra>
-                                <Label>Feathery uwu</Label>
-                                <Button primary floated='left'>
-                                    Update
-                      <Icon name='right chevron' />
-                                </Button>
-                                <Button primary floated='left'>
-                                    Delete
-                      <Icon name='right chevron' />
-                                </Button>
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>)
-            }
-            return items
-        }
-    };
+    // componentDidMount() {
+    //     fetch('/api/animals')
+    //         .then(res => {
+    //             if (res.status === 200) {
+    //                 res.json().then(anims => this.setState({ animals: anims.rows }))
+    //             } else {
+    //                 alert('something went wrong loading animals')
+    //             }
+    //         })
+    // }
+    // createItem = () => {
+    //     let animals = this.state.animals
+    //     if (animals.length > 1) {
+    //         let items = []
+    //         for (var i = 0, len = animals.length; i < len; i++) {
+    //             items.push(
+    //                 <Item key={animals[i].id}>
+    //                     <Item.Content>
+    //                         <Item.Header as='a'>
+    //                             {animals[i].name}
+    //                         </Item.Header>
+    //                         <Item.Description>
+    //                             {animals[i].diet}
+    //                         </Item.Description>
+    //                         <Item.Extra>
+    //                             <Label>Feathery uwu</Label>
+    //                             <Button primary floated='left'>
+    //                                 Update
+    //                   <Icon name='right chevron' />
+    //                             </Button>
+    //                             <Button primary floated='left'>
+    //                                 Delete
+    //                   <Icon name='right chevron' />
+    //                             </Button>
+    //                         </Item.Extra>
+    //                     </Item.Content>
+    //                 </Item>)
+    //         }
+    //         return items
+    //     }
+    // };
 
     render() {
         return (
@@ -110,7 +110,7 @@ export default class EmpPosting extends Component {
                 </Form>
                 <Item.Group divided>
                     <Item>
-                        {this.createItem()}
+                        {/* {this.createItem()} */}
                         {/* <Item.Content>
                             <Item.Header as='a'>Mike Hawk</Item.Header>
                             <Item.Description>Is long and hard, in all seriousness, i think care package

@@ -11,7 +11,7 @@ export default class TAnimalInfo extends Component {
     }
 
     makeFetch = async (data) => {
-        await axios.post('/api/customers/misc-animal-info')
+        await axios.post('/api/customers/misc-animal-info', data)
             .then(res => {
                 if (res.status === 200) {
                     /*do something wih response.json()*/

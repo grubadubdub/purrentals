@@ -40,6 +40,10 @@ export default class TAnimalInfo extends Component {
         this.setState(prevState => ({ animaltype: !prevState.animaltype }))
     }
 
+    // createTuple = () => {
+    //     let rows = 
+    // }
+
     render() {
         return (
             <Grid>
@@ -90,7 +94,7 @@ export default class TAnimalInfo extends Component {
                             <Table.Row>
                                 <Table.Cell>
                                     1
-        </Table.Cell>
+                                </Table.Cell>
                                 <Table.Cell>paleo</Table.Cell>
                                 <Table.Cell>furry</Table.Cell>
                             </Table.Row>

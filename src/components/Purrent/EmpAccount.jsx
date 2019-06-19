@@ -7,7 +7,6 @@ class EmpAccount extends Component {
     state = { 
         empid: this.props.empid,
         salary: 100,
-
     }
 
     render() {
@@ -19,7 +18,9 @@ class EmpAccount extends Component {
                         <EmpCard empid={this.state.empid} />
 
                     <Link to={{pathname: 'update-purrent', state: this.state.empid}}>
-                            <Button size='medium'>Update Info</Button>
+                            <Button size='medium'>
+                                Update Info
+                            </Button>
                         </Link>
                     </Grid.Column>
 

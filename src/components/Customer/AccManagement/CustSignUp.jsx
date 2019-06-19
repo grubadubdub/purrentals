@@ -1,19 +1,20 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import { Form, Button, Grid, Header, Checkbox } from 'semantic-ui-react';
+import React, { Component } from 'react'
+import { Form, Checkbox, Button, Grid, Header } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
-import { async } from 'q';
+import axios from 'axios';
+
 
 class CustSignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       custid: null,
-      name: '',
-      address: '',
-      pnum: ''
+      name: null,
+      address: null,
+      pnum: null,
     }
   }
+
 
   handleTextChange = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -63,6 +64,7 @@ class CustSignUp extends Component {
         </Grid.Row>
       </Grid>
     );
+
   }
 }
 

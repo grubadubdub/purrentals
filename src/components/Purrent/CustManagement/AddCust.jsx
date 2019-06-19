@@ -37,7 +37,7 @@ class AddCust extends Component {
           <Form>
             <Form.Field>
               <label htmlFor="custid">Enter a 3 Digit Number CustID:</label>
-              <input type='number' name='custid' placeholder='CustID' onChange=/>
+              <input type='number' name='custid' placeholder='CustID'/>
             </Form.Field>
             <Form.Field>
               <label htmlFor="name">Name:</label>

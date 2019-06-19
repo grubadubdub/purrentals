@@ -19,7 +19,7 @@ class AddCust extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }   
 
-  async makeFetch(data) {
+  makeFetch = async (data) => {
     console.log(this.state)
     const { history } = this.props
     const res = await axios.post('/api/customers/signup', data);

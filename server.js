@@ -6,15 +6,7 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-<<<<<<< HEAD
     password: 'cs304',
-=======
-<<<<<<< HEAD
-    password: 'honeypot',
-=======
-    password: 'cs304',
->>>>>>> a73ae1073c8fdc53695287eefdbc124cc1b63593
->>>>>>> bf6607d9f234e904c052dcd692b6242ad06c46d1
     database: 'purrentals',
     max: 19, // max 10 connections
     port: 5432

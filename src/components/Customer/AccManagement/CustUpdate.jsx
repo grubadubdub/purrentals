@@ -1,37 +1,39 @@
 import React, { Component } from 'react'
 import { Form, Button, Grid, Header } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
+import Axios from 'axios';
 
 export default class CustUpdate extends Component {
-  state = {
-    custid: this.props.location.state,
-    name: null,
-    address: null,
-    pnum: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      custid: this.props.location.state,
+      name: null,
+      address: null,
+      pnum: null,
+    }
   }
+
   handleTextChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  makeFetch(data) {
-    console.log(data);
-    var request = new Request('http://localhost:3000/api/customers/update', {
-        method: 'POST',
-        header: new Headers({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify(data)
-    });
-    fetch(request)
-        .then(response => {
-            if (response.status === 200) {
-                console.log(response)
-                return response.json();
-            } else {
-                throw new Error('Something went wrong on api server!');
-            }
-        }).catch(error => {
-            console.error(error);
-        });
+  makeFetch = async (data) => {
+    console.log(this.props.location.state)
+    console.log(this.state.custid)
+    const { history } = this.props
+    await Axios.post('/api/customers/update', data)
+    .then((res) => {
+      if (res.status === 500) {
+        alert('something wrong, try again')
+      } else
+        if (res.status === 200) {
+          history.push('/customer', res.data)
 
+        }
+    }).catch(e => { 
+      console.log(e)
+    })
 }
 
   // updateCustomer = (event) => {

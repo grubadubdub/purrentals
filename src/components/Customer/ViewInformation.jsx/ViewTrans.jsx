@@ -9,12 +9,18 @@ export default class ViewTrans extends Component {
         transactions: [],
     }
 
-    // componentDidMount() {
-    //     fetch('/customer-transactions')
-    //         .then(res => res.json()
-    //         .then(trans => this.setState({ transactions: trans.rows }))
-    //         )
-    // }
+    componentDidMount() {
+        fetch('/customer-transactions')
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            }).catch(error => {
+                console.error(error);
+              });
+    }
     createItem = () => {
         // let animals = this.state.animals
         // if (animals.length > 1) {

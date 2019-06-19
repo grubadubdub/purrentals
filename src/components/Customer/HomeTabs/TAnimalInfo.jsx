@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import { Grid, Input, Form, Label, Button, Radio, FormGroup, Table, Icon, Menu, Header } from 'semantic-ui-react';
 import { BrowserRouter, Link } from "react-router-dom";
 
@@ -9,25 +10,22 @@ export default class TAnimalInfo extends Component {
         animaltype: false,
     }
 
-    makeFetch(data) {
-        console.log(data);
-        var request = new Request('http://localhost:3000/api/customers/misc-animal-info', {
-            method: 'POST',
-            header: new Headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(data)
-        });
-        fetch(request)
-            .then(response => {
-                if (response.status === 200) {
-                    console.log(response)
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong on api server!');
+    makeFetch = async (data) => {
+        await axios.post('/api/customers/misc-animal-info')
+            .then(res => {
+                if (res.status === 200) {
+                    /*do something wih response.json()*/
+                    // console.log(response)
+                    // return response.json();
+                } if (res.status === 500) {
+                    alert('server side error')
+                } else if (res.status === 400) {
+                    alert('client side error')
                 }
             }).catch(error => {
                 console.error(error);
             });
-    
+
     }
     togglePackage = (e) => {
         console.log(this.state)

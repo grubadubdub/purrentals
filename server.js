@@ -5,11 +5,11 @@ const PORT = 9999
 
 let pool = new pg.Pool({
     host: 'localhost',
-    user: 'cs304',
-    password: 'cs304',
+    user: 'postgres',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
 })
 
 // express instance 

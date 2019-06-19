@@ -1,35 +1,40 @@
 import React, { Component } from 'react';
 import { Button, Item, Label, Icon, Form, FormGroup, Dropdown } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom'
+import Axios from 'axios';
 //import Routes from './../Route'
 
 
 class Posting extends Component {
-    state = { 
-        custid: this.props.custid,
-        filter: null,
-             }
+    constructor(props) {
+        super(props)
+        this.state = {
+            animals: [],
+            custid: this.props.custid,
+            filter: null,
+        }
+    }
 
-    handleDropdownChange = (e, data) => {
-        this.setState({ [data.name]: data.value }, () => {
-                console.log(this.state);
-                var request = new Request('http://localhost:3000/animal-filter', {
-                    method: 'POST',
-                    header: new Headers( { 'Content-Type': 'application/json'}),
-                    body: JSON.stringify(this.state)
-                });
-                fetch(request)
-                .then(response => {
-                  if (response.status === 200) {
-                    return response.json();
-                  } else {
-                    throw new Error('Something went wrong on api server!');
-                  }
-                }).catch(error => {
-                    console.error(error);
-                  });
-                
+    handleDropdownChange = (data) => {
+        this.setState({ [data.name]: data.value }, async () => {
+            console.log(this.state);
+            // const { history } = this.props
+            await Axios.post('/animal-filter', data)
+                .then((res) => {
+                    if (res.status === 500) {
+                        alert('server side error')
+                    } else if (res.status === 400) {
+                        alert('client side error')
+                    } else if (res.status === 200) {
+                        /*display filtered info*/
+                    } else (
+                        alert('error')
+                    )
+                }).catch(e => {
+                    console.log(e)
                 })
+        })
+
 
     }
     animalOptions = [
@@ -50,6 +55,48 @@ class Posting extends Component {
         }
     ]
 
+    componentDidMount() {
+        fetch('/api/animals')
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(anims => this.setState({ animals: anims.rows }))
+                } else {
+                    alert('something went wrong loading animals')
+                }
+            })
+    }
+    createItem = () => {
+        let animals = this.state.animals
+        if (animals.length > 1) {
+            let items = []
+            for (var i = 0, len = animals.length; i < len; i++) {
+                items.push(
+                    <Item key={animals[i].id}>
+                        <Item.Content>
+                            <Item.Header as='a'>
+                                {animals[i].name}
+                            </Item.Header>
+                            <Item.Description>
+                                {animals[i].diet}
+                            </Item.Description>
+                            <Item.Extra>
+                                <Label>Feathery uwu</Label>
+                                <Button primary floated='left'>
+                                    Rent
+                      <Icon name='right chevron' />
+                                </Button>
+                                <Button primary floated='left'>
+                                    Buy
+                      <Icon name='right chevron' />
+                                </Button>
+                            </Item.Extra>
+                        </Item.Content>
+                    </Item>)
+            }
+            return items
+        }
+    };
+
     render() {
         return (
             <div>
@@ -68,7 +115,10 @@ class Posting extends Component {
                     </FormGroup>
                 </Form>
                 <Item.Group divided>
-                    <Item>
+                    {this.createItem()}
+
+
+                    {/* <Item>
                         <Item.Content>
                             <Item.Header as='a'>Mike Hawk</Item.Header>
                             <Item.Description>Is long and hard, in all seriousness, i think care package
@@ -114,9 +164,8 @@ class Posting extends Component {
                     </Button>
                             </Item.Extra>
                         </Item.Content>
-                    </Item>
+                    </Item> */}
                 </Item.Group>
-                {/* <Routes/> */}
             </div>
         );
     }

@@ -1,30 +1,39 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import { Form, Button, Grid, Header, Checkbox } from 'semantic-ui-react';
+import React, { Component } from 'react'
+import { Form, Checkbox, Button, Grid, Header } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
-import { async } from 'q';
+import axios from 'axios';
+
 
 class CustSignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       custid: null,
-      name: '',
-      address: '',
-      pnum: ''
+      name: null,
+      address: null,
+      pnum: null,
     }
   }
 
-  handleTextChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value })
-  }   
+    handleTextChange = e => {
+      this.setState({ [e.target.name]: e.target.value })
+    }   
 
-  async makeFetch(data) {
-    const { history } = this.props
-    const res = await axios.post('/api/customers/signup', data);
-  }
+    makeFetch = async (data) => {
+      const { history } = this.props
+      await axios.post('/api/customers/signup', data)
+        .then((res) => {
+          if (res.status === 500) {
+            alert('something wrong, try again')
+          } else
+            if (res.status === 200) {
+              history.push('/customer-login')
 
-
+            }
+        }).catch(e => { 
+          console.log(e)
+        })
+    }
     render() {
       return (
         <Grid>
@@ -53,7 +62,11 @@ class CustSignUp extends Component {
                 <Checkbox label='I agree to the Terms and Conditions, like do I even ohmagaaaawd' />
               </Form.Field>
               {/* <Link to='/customer-login'> */}
-              <Button onClick={() => {this.makeFetch(this.state)}}> Submit </Button>
+              <Button onClick={() => {
+                console.log('validate customer table dont contain custid and then add')
+                this.makeFetch(this.state);
+              }
+              }> Submit </Button>
               {/* </Link> */}
               {/* <Form success>
         <Message success header='Form Completed' content="You're all signed up!" />

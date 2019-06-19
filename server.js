@@ -260,7 +260,7 @@ app.post('/api/transactions', function (req, res) {
             res.status(500).send('Error fetching data\n');
         }
         else {
-            db.query("SELECT * FROM transactions WHERE custid = $1", [custid], (err, table) => {
+            db.query(`SELECT * FROM transactions WHERE custid = ${custid}`, (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');

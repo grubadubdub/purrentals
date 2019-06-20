@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'honeypot',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 8888
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -305,9 +305,10 @@ app.get('/api/animals', (req, res) => {
         if (err)
             return console.error('error fetching data\n' + err)
         db.query(
-            `select a.animalid, a.name, ct.type_of_clinic 
-            from animal a, clinic c, clinictype ct
-            where a.clinid = c.clinid and ct.typeid = c.typeid`
+            `select a.animalid, a.name, d.diet, ct.type_of_clinic 
+            from animal a, clinic c, clinictype ct, diet d
+            where a.clinid = c.clinid and ct.typeid = c.typeid
+            and d.dietid = a.dietid`
             , (err, table) => {
                 if (err)
                     return console.log(err)
@@ -562,7 +563,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
-<<<<<<< HEAD
             if (pack) {
                 sel  = sel + "info, ";
             }
@@ -571,16 +571,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
             }
             if (animaltype) {
                 sel  = sel + "animaltype, ";
-=======
-            if (info === "true") {
-                sel = sel + "info, ";
-            }
-            if (diet === "true") {
-                sel = sel + "diettype, ";
-            }
-            if (animaltype === "true") {
-                sel = sel + "animaltype, ";
->>>>>>> c8f39beaf29145cd6fcc56cf69024d1a51e19b14
             }
             sel = sel.substring(0,sel.length - 2)
             console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")
@@ -661,7 +651,222 @@ app.post('/api/purrents/curr-purrent', function (req, res) {
         }
     })
 });
+app.post('/api/animal-filter', function (req, res) {
+    let filter = req.body.filter;
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            let sel = "";
+            if (filter==="furry") {
+                sel = "furries";
+            } else if (filter==="feathery") {
+                sel = "featheries";
+            } else if (filter==="scaly") {
+                sel = "scalies"
+            }
+            db.query("SELECT a.animalid, a.name, f.address FROM " + sel + " fur, animal a, fungeon f WHERE a.animalid = fur.animalid AND a.business_license_id = f.business_license_id;", (err, table) => {
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('animals were found!\n');
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('combination was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
 
+app.post('/api/purrents/add-animal', function (req, res) {
+    let animalid = req.body.animalid
+    let animaltype = req.body.animaltype
+    let diet = req.body.diet
+    let blid = req.body.blid
+    let clinid = req.body.clinid
+    let packageid = req.body.packageid
+    let name = "unnamed"
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("INSERT INTO animal VALUES ($1,$2,$3,$4,$5,$6);", [animalid, name, diet, clinid, blid, packageid], (err, table) => {
+                if (err) {
+                    console.log('animal already exists!' + err);
+                    res.status(400).send('animal already exists!');
+                } else {
+                    db.query("INSERT INTO " + animaltype + "(animalid) VALUES ($1);", [animalid], (err, table) => {
+                        if (err) {
+                            console.log('animal already exists!' + err);
+                            res.status(400).send('animal already exists!');
+                        } else {
+                            console.log('Success!\n');
+                            res.status(200).send(true);
+                        }
+                    })
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/update-animal', function (req, res) {
+    let animalid = req.body.animalid
+    let animaltype = req.body.animaltype
+    let diet = req.body.diet
+    let blid = req.body.blid
+    let clinid = req.body.clinid
+    let packageid = req.body.packageid
+    let name = "unnamed"
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("UPDATE animal SET dietid = $2, clinid = $3, business_license_id = $4, packageid = $5 WHERE animalid = $1;", [animalid, diet, clinid, blid, packageid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send('failed' + err);
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send('success!');
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/delete-animal', function (req, res) {
+    let animalid = req.body.animalid
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("DELETE FROM animal WHERE animalid = $1;", [animalid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send(err);
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send('Success!\n');
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/delete-cust', function (req, res) {
+    let custid = req.body.custid
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("DELETE FROM customer WHERE custid = $1;", [custid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send(err);
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send('Success!\n');
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/delete-purrent', function (req, res) {
+    let empid = req.body.empid
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("DELETE FROM purrent_manages WHERE empid = $1;", [empid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send(err);
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send('Success!\n');
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/add', function (req, res) {
+    let empid = req.body.empid
+    let addr = req.body.addr
+    let workerid = req.body.workerid
+    let salary = req.body.salary
+    let blid = req.body.blid
+    let name = "unnamed"
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("INSERT INTO purrent_manages VALUES ($1,$2,$3,$4,$5,$6);", [empid, name, addr, salary, workerid, blid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send('invalid!!');
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send(true);
+                }
+            });
+        }
+    })
+});
+
+app.post('/api/purrents/update', function (req, res) {
+    let empid = req.body.empid
+    let addr = req.body.addr
+    let workerid = req.body.workerid
+    let salary = req.body.salary
+    let blid = req.body.blid
+
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send();
+        }
+        else {
+            db.query("UPDATE purrent_manages SET address = $2, salary = $3, workerid = $4, business_license_id = $5 WHERE empid = $1;", [empid, addr, salary, workerid, blid], (err, table) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send('failed' + err);
+                } else {
+                    console.log('Success!\n');
+                    res.status(200).send('success!');
+                }
+            });
+        }
+    })
+});
 app.get('/', (req, res) => {
     res.send('HALLO')
 })

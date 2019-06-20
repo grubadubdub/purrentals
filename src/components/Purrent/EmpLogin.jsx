@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 export default class EmpLogin extends Component {
     constructor(props) {
         super(props);
-        this.state = { empid: 'EmpID' }
+        this.state = { empid: '' }
     }
 
     getID = (e) => {

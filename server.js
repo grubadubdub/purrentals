@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'schoolsux',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 4000
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -168,6 +168,31 @@ app.post('/api/animals', function (req, res) {
     })
 })
 
+app.post('/api/purrents/login', function (req, res) {
+    console.log('request body: ' + req.body.empid);
+    let empid = req.body.custid
+
+    // res.status(200).send(custid)
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err)
+            res.send(500, err)
+            // res.status(500).send()
+        }
+        else {
+            db.query(`select * from customer where empid=${empid}`, (err, table) => {
+                console.log(table)
+                done()
+                if (table.rowCount === 0)
+                    res.send(500, err)
+                else {
+                    res.status(200).send(empid)
+                }
+            })
+        }
+    })
+})
+
 // POST CUSTOMERS
 app.post('/api/customers/signup', function (req, res) {
     const { custid, name, address, pnum} = req.body
@@ -193,9 +218,6 @@ app.post('/api/customers/signup', function (req, res) {
         }
     })
 });
-
-/* hi baby */
-
 
 app.post('/api/customers/login', function (req, res) {
     console.log('request body: ' + req.body.custid);

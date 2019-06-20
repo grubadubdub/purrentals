@@ -6,11 +6,7 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-<<<<<<< HEAD
-    password: 'honeypot',
-=======
     password: 'cs304',
->>>>>>> a73ae1073c8fdc53695287eefdbc124cc1b63593
     database: 'purrentals',
     max: 19, // max 10 connections
     port: 5432
@@ -32,6 +28,11 @@ app.use(function (req, res, next) {
 // ------------ REST API ------------ //
 
 // C U S T O M E R S
+app.post('/animal-filter', function (req, res) {
+    // let custid = 
+    res.send('')
+})
+
 
 app.post('/api/customers/new-rental', function (req, res) {
   let custid = req.body.custid
@@ -252,7 +253,6 @@ app.get('/api/animals', (req, res) => {
 
 app.post('/api/transactions', function (req, res) {
     let custid = req.body.custid;
-    console.log('customer transactions\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {

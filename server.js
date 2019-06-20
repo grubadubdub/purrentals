@@ -172,7 +172,6 @@ app.post('/api/purrents/login', function (req, res) {
     console.log('request body: ' + req.body.empid);
     let empid = req.body.custid
 
-    // res.status(200).send(custid)
     pool.connect((err, db, done) => {
         if (err) {
             console.error('error fetching data\n' + err)
@@ -220,51 +219,69 @@ app.post('/api/customers/signup', function (req, res) {
 });
 
 app.post('/api/customers/login', function (req, res) {
-    console.log('request body: ' + req.body.custid);
-    let custid = req.body.custid
+	console.log('request body: ' + req.body.custid);
+	let custid = req.body.custid;
+	console.log('customer login\n');
+	pool.connect((err, db, done) => {
+    	console.log('connected\n');
+    	if (err) {
+        	console.error('error fetching data\n' + err)
+        	res.send(500, err)
+        	// res.status(500).send()
+    	}
+    	else {
+        	db.query("SELECT * FROM customer WHERE custid = " + custid + ";", (err, table) => {
+            	console.log(req.body + '\n');
+            	if (err) {
+                	console.log('Query error!\n' + err + '\n');
+                	res.status(500).send('query error!\n');
+            	} else {
+                	if (table && table.rows && table.rows.length != 0) {
+                    	console.log('custid was found!\n');
+                    	res.status(200).send(true);
+                	} else {
+                    	console.log('custid was NOT found!\n');
+                    	res.status(400).send(false);
+                	}
+            	}
+        	})
+    	}
+	})
+});
 
-    // res.status(200).send(custid)
-    pool.connect((err, db, done) => {
-        if (err) {
-            console.error('error fetching data\n' + err)
-            res.send(500, err)
-            // res.status(500).send()
-        }
-        else {
-            db.query(`select * from customer where custid=${custid}`, (err, table) => {
-                done()
-                if (table.rowCount === 0)
-                    res.send(500, err)
-                else {
-                    res.status(200).send(custid)
-                }
-            })
-        }
-    })
-})
 
 // login employee
 app.post('/api/purrents/login', function (req, res) {
-    console.log('request body: ' + req.body.empid);
-    let empid = req.body.empid
-    // res.status(200).send(custid)
-    pool.connect((err, db, done) => {
-        if (err) {
-            console.error('error fetching data\n' + err)
-            res.send(500, err);
-            // res.status(500).send()
-        }
-        else {
-            db.query(`select * from purrent_manages where empid=${empid}`, (err, table) => {
-                if (table.rowCount === 0)
-                    res.send(500, err)
-                else {
-                    res.status(200).send(empid)
-                }
-            })
-        }
-    })
-})
+	console.log('request body: ' + req.body.empid);
+	let empid = req.body.empid;
+	console.log('employee login\n');
+	pool.connect((err, db, done) => {
+    	console.log('connected\n');
+    	if (err) {
+        	console.error('error fetching data\n' + err)
+        	res.send(500, err)
+        	// res.status(500).send()
+    	}
+    	else {
+        	db.query("SELECT * FROM purrent_manages WHERE empid = " + empid + ";", (err, table) => {
+            	console.log(req.body + '\n');
+            	if (err) {
+                	console.log('Query error!\n' + err + '\n');
+                	res.status(500).send('query error!\n');
+            	} else {
+                	if (table && table.rows && table.rows.length != 0) {
+                    	console.log('empid was found!\n');
+                    	res.status(200).send(true);
+                	} else {
+                    	console.log('empid was NOT found!\n');
+                    	res.status(400).send(false);
+                	}
+            	}
+        	})
+    	}
+	})
+});
+
 
 // customers
 // GET CUSTOMERS

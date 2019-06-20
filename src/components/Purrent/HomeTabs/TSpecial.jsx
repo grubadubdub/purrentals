@@ -9,6 +9,7 @@ export default class TSpecial extends Component {
       custid: null,
       start: null,
       end: null,
+      ret: null
     }
   }
 
@@ -16,10 +17,10 @@ export default class TSpecial extends Component {
     console.log(data)
     await axios.post('/api/rental-between-dates')
         .then(res => {
+          console.log(res)
             if (res.status === 200) {
-                /*do something wih response.json()*/
-                // console.log(response)
-                // return response.json();
+               console.log(res.data)
+               this.setState({ret: res.data})
             } if (res.status === 500) {
                 alert('server side error')
             } else if (res.status === 400) {

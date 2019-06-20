@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -902,6 +902,7 @@ app.post('/api/transactions-all', function (req, res) {
 });
 
 app.get('/api/all-purrents', function (req, res) {
+    console.log('customer transactions\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -952,15 +953,11 @@ app.get('/api/ytd_sales', function (req, res) {
                 }
             })
         }
-    });
-});     
-
-app.get('/api/fungeon_top', function (req, res) {
-    res.send('sdlkf')
-
+    })
 });
 
-app.get('/api/best_seller', function (req, res) {
+app.get('/api/get_purrks', function (req, res) {
+    console.log('customer transactions\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -968,13 +965,7 @@ app.get('/api/best_seller', function (req, res) {
             res.status(500).send('Error fetching data\n');
         }
         else {
-            db.query(` select a.name, a.animalid, count(t.transid)
-                from animal a, transactions t
-                where t.animalid = a.animalid
-                group by a.animalid
-                order by count(t.transid) desc
-                limit 1;
-            `, (err, table) => {
+            db.query("SELECT * FROM purrks;", (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
@@ -990,9 +981,122 @@ app.get('/api/best_seller', function (req, res) {
                 }
             })
         }
-    });
+    })
 });
 
+app.get('/api/fungeons', function (req, res) {
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM purrks;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.post('/api/rental-between-dates', function (req, res) {
+    let custid = req.body.custid;
+    let start = req.body.start;
+    // let end = req.body.end;
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM transactions t, rentals r, animal a WHERE r.transid = t.transid AND t.animalid = a.animalid AND t.custid = $1 AND $2::date >= r.start_date", [custid, start], (err, table) => {
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log(table)
+                    console.log(table.rows)
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('animals were found!\n');
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('combination was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/div-payment-method', function (req, res) {
+    req = {visa: "Visa", mc: "MasterCard", debit: "", cash: ""}
+    let visa = req.visa;
+    let mc = req.mc;
+    let debit = req.debit;
+    let cash = req.cash;
+    // console.log(req)
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            let sel = "";
+            if (visa!=="") {
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method =" + " VISA ";
+            }
+            if (mc!=="" ) {
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = 'MC' ";
+            }
+            if (debit!=="") {
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = 'DEBIT'";
+            }
+            if (cash!=="") {
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = \'CASH\'";
+            }
+            sel = sel.substring(0, sel.length - 3);
+            console.log("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);");
+            db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('payments were found!\n');
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('combination was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
 
 app.get('/', (req, res) => {
     res.send('HALLO')

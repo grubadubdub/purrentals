@@ -15,7 +15,7 @@ class AccountGrid extends Component {
                         <AccountCard custid={this.state.custid} />
 
                         Current Purrks: None redeemed yet
-                    <Link to='/customer-redeempurrks'>
+                    <Link to={{pathname:'/customer-redeempurrks', state: this.state.custid}}>
                             <Button size='medium'>Redeem Purrks!</Button>
                         </Link>
                     </Grid.Column>
@@ -48,7 +48,7 @@ class AccountGrid extends Component {
                                         <Link to={{ pathname: '/customer-transactions', state: this.state.custid }}>
                                             <Button color='green'>View All Transactions</Button>
                                         </Link>
-                                        <Link to={{ pathname: '/customer-transactions', state: this.state.custid }}>
+                                        <Link to={{ pathname: '/customer-invoices', state: this.state.custid }}>
                                             <Button color='blue'>View All Invoices</Button>
                                         </Link>
                                     </Item.Extra>

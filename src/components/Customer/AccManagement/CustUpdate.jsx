@@ -76,15 +76,15 @@ export default class CustUpdate extends Component {
             </Form.Field>
             <Form.Field>
               <label htmlFor="name">Name:</label>
-              <input type='text' name='name' placeholder='Name' />
+              <input type='text' name='name' placeholder='Name' onChange={this.handleTextChange} />
             </Form.Field>
             <Form.Field>
               <label htmlFor="address">Address:</label>
-              <input type='text' name='address' placeholder='Address' />
+              <input type='text' name='address' placeholder='Address' onChange={this.handleTextChange}/>
             </Form.Field>
             <Form.Field>
               <label htmlFor="pnum">Phone Number:</label>
-              <input type='number' name='pnum' placeholder='Phone Number' />
+              <input type='number' name='pnum' placeholder='Phone Number' onChange={this.handleTextChange}/>
             </Form.Field>
             <Link to='/customer'>
               <Button onClick={() => {

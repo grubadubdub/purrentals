@@ -13,12 +13,12 @@ let pool = new pg.Pool({
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
-// express instance 
+// express instance
 let app = express()
 
 // body parser middleware
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
@@ -158,42 +158,20 @@ app.post('/api/animals', function (req, res) {
     })
 })
 
-// app.post('/api/purrents/login', function (req, res) {
-//     console.log('request body: ' + req.body.empid);
-//     let empid = req.body.custid
-
-//     // res.status(200).send(custid)
-//     pool.connect((err, db, done) => {
-//         if (err) {
-//             console.error('error fetching data\n' + err)
-//             res.send(500, err)
-//             // res.status(500).send()
-//         }
-//         else {
-//             db.query(`select * from customer where empid=${empid}`, (err, table) => {
-//                 console.log(table)
-//                 done()
-//                 if (table.rowCount === 0)
-//                     res.send(500, err)
-//                 else {
-//                     res.status(200).send(empid)
-//                 }
-//             })
-//         }
-//     })
-// })
-app.post('/api/purrents/login', function (req, res) {
+// WORKING ENDPOINTSSSSSSS ----------------------------
+app.post('/api/customers/login', function (req, res) {
     console.log('request body: ' + req.body.custid);
-    let custid = req.body.empid;
+    let custid = req.body.custid;
     console.log('customer login\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
             console.error('error fetching data\n' + err)
             res.send(500, err)
+            // res.status(500).send()
         }
         else {
-            db.query("SELECT * FROM purrent_manages WHERE empid = " + custid + ";", (err, table) => {
+            db.query("SELECT * FROM customer WHERE custid = " + custid + ";", (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
@@ -201,7 +179,7 @@ app.post('/api/purrents/login', function (req, res) {
                 } else {
                     if (table && table.rows && table.rows.length != 0) {
                         console.log('custid was found!\n');
-                        res.status(200).send(true);
+                        res.status(200).send(custid);
                     } else {
                         console.log('custid was NOT found!\n');
                         res.status(400).send(false);
@@ -212,11 +190,11 @@ app.post('/api/purrents/login', function (req, res) {
     })
 });
 
-// POST CUSTOMERS
-app.post('/api/customers/signup', function (req, res) {
-    const { custid, name, address, pnum } = req.body
-
-    let found = false;
+app.post('/api/customers/add', function (req, res) {
+    let custid = req.body.custid
+    let name = req.body.name
+    let address = req.body.address
+    let pnum = req.body.pnum
 
     pool.connect((err, db, done) => {
         if (err) {
@@ -224,8 +202,7 @@ app.post('/api/customers/signup', function (req, res) {
             res.status(500).send();
         }
         else {
-            // console.log(`INSERT INTO customer VALUES (${custid},\'${name}\',\'${address}\',\'${pnum}\')`)
-            db.query(`INSERT INTO customer VALUES (${custid},\'${name}\',\'${address}\',\'${pnum}\')`, (err, table) => {
+            db.query("INSERT INTO customer VALUES ($1,$2,$3,$4);", [custid, name, address, pnum], (err, table) => {
                 if (err) {
                     console.log('customer already exists!');
                     res.status(400).send('customer already exists!');
@@ -343,6 +320,7 @@ app.get('/api/animals', (req, res) => {
 
 app.post('/api/transactions', function (req, res) {
     let custid = req.body.custid;
+    console.log('customer transactions\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -350,14 +328,19 @@ app.post('/api/transactions', function (req, res) {
             res.status(500).send('Error fetching data\n');
         }
         else {
-            db.query(`SELECT * FROM transactions WHERE custid = ${custid}`, (err, table) => {
+            db.query("SELECT * FROM transactions WHERE custid = $1", [custid], (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
                     res.status(500).send('query error!\n');
                 } else {
-                    console.log('custid was found!\n');
-                    res.status(200).send(table.rows);
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('custid DNE');
+                        res.status(400).send('custid not found!');
+                    }
                 }
             })
         }
@@ -637,7 +620,78 @@ app.post('/api/customers/redeem-purrks', function (req, res) {
     })
 });
 
+app.post('/api/purrents/curr-purrent', function (req, res) {
+    let custid = req.body.empid;
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM purrent_manages WHERE empid = $1;", [custid], (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('empid was found!\n');
+                        res.status(200).send(custid);
+                    } else {
+                        console.log('empid was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
 
+
+// customers
+// POST CUSTOMERS
+app.post('/customers', function (req, res) {
+    var fname = req.body.fname
+    var addr = req.body.address
+    var phone = req.body.phone
+
+    pool.connect((err, db, done) => {
+        if (err)
+            return console.error('error fetching data\n' + err)
+        else {
+            db.query("select * from animal", (err, table) => {
+                if (err)
+                    return console.log(err)
+                else {
+                    console.table(table)
+                    console.log('connection success')
+
+                }
+            })
+        }
+    })
+})
+
+// member
+// app.put
+
+// GET
+app.get('/api/animals', (req, res) => {
+    pool.connect((err, db, done) => {
+        if (err)
+            return console.error('error fetching data\n' + err)
+        db.query(`select a.animalid, a.name, d.diettype, ct.type_of_clinic
+            from animal a, clinic c, clinictype ct, diet d
+            where a.clinid = c.clinid 
+            and c.typeid = ct.typeid
+            and d.dietid = a.dietid`, (err, table) => {
+            if (err)
+                return console.log(err)
+            res.json(table)
+        })
+    })
+})
 
 app.get('/', (req, res) => {
     res.send('HALLO')

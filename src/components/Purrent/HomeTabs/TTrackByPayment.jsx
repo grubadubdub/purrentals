@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import { Grid, Header, Form, FormGroup, Button, Table } from 'semantic-ui-react';
 import axios from 'axios'
 export default class TTrackByPayment extends Component {
-
-    state = {
-        visa: false,
-        mc: false,
-        debit: false,
-        cash: false,
-        transactions: []
+    constructor() {
+        super()
+        this. state = {
+            visa: false,
+            mc: false,
+            debit: false,
+            cash: false,
+            transactions: []
+        }
     }
 
     makeFetch = async (data) => {
@@ -28,8 +30,7 @@ export default class TTrackByPayment extends Component {
         } if (this.state.cash) {
             opts.cash = "Cash"
         }
-        console.log('what')
-        await axios.post('/api/div/payment-method', opts)
+        await axios.post('/api/div-payment-method', opts)
             .then(res => {
                 console.log(res.status)
                 if (res.status === 200) {
@@ -69,10 +70,10 @@ export default class TTrackByPayment extends Component {
                 items.push(
                     <Table.Row key={trans[i].custid}>
                     <Table.Cell>{trans[i].custid}</Table.Cell>
-                    {/* <Table.Cell>{trans[i].price}</Table.Cell>
+                    <Table.Cell>{trans[i].price}</Table.Cell>
                     <Table.Cell>{trans[i].date}</Table.Cell>
                     <Table.Cell>{trans[i].animalid}</Table.Cell>
-                    <Table.Cell>{trans[i].custid}</Table.Cell> */}
+                    <Table.Cell>{trans[i].custid}</Table.Cell>
                     </Table.Row>
                   )
             }

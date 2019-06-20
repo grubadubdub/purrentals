@@ -221,6 +221,29 @@ app.post('/api/customers/login', function (req, res) {
     })
 })
 
+// login employee
+app.post('/api/purrents/login', function (req, res) {
+    console.log('request body: ' + req.body.empid);
+    let empid = req.body.empid
+    // res.status(200).send(custid)
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err)
+            res.send(500, err);
+            // res.status(500).send()
+        }
+        else {
+            db.query(`select * from purrent_manages where empid=${empid}`, (err, table) => {
+                if (table.rowCount === 0)
+                    res.send(500, err)
+                else {
+                    res.status(200).send(empid)
+                }
+            })
+        }
+    })
+})
+
 // customers
 // GET CUSTOMERS
 app.get('/api/customers', (req, res) => {

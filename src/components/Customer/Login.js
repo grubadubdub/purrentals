@@ -9,7 +9,6 @@ export default class Login extends Component {
     super(props);
     this.state = {
       custid: '',
-      name: ''
     }
   }
   getID = (e) => {

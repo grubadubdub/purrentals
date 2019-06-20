@@ -305,10 +305,11 @@ app.get('/api/animals', (req, res) => {
         if (err)
             return console.error('error fetching data\n' + err)
         db.query(
-            `select a.animalid, a.name, d.diet, ct.type_of_clinic 
-            from animal a, clinic c, clinictype ct, diet d
-            where a.clinid = c.clinid and ct.typeid = c.typeid
-            and d.dietid = a.dietid`
+            `select a.animalid, a.name, d.diettype, ct.type_of_clinic
+                from animal a, clinic c, clinictype ct, diet d
+                where a.clinid = c.clinid 
+                and c.typeid = ct.typeid
+                and d.dietid = a.dietid`
             , (err, table) => {
                 if (err)
                     return console.log(err)
@@ -563,14 +564,15 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
-            if (info === "true") {
-                sel = sel + "info, ";
+
+            if (pack) {
+                sel  = sel + "info, ";
             }
-            if (diet === "true") {
-                sel = sel + "diettype, ";
+            if (diet) {
+                sel  = sel + "diettype, ";
             }
-            if (animaltype === "true") {
-                sel = sel + "animaltype, ";
+            if (animaltype) {
+                sel  = sel + "animaltype, ";
             }
             sel = sel.substring(0,sel.length - 2)
             console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")

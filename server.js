@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'honeypot',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 8888
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -1056,6 +1056,7 @@ app.get('/api/div-payment-method', function (req, res) {
             let sel = "";
             if (visa!=="") {
                 if (sel !== "") {
+                    console.log('in visa: ' + sel)
                     sel = sel + " OR "
                 }
                 sel = sel + "i.payment_method =" + " VISA ";
@@ -1082,6 +1083,7 @@ app.get('/api/div-payment-method', function (req, res) {
             console.log("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);");
             db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
                 if (err) {
+                    console.log(visa)
                     console.log('Query error!\n' + err + '\n');
                     res.status(500).send('query error!\n');
                 } else {
@@ -1096,6 +1098,78 @@ app.get('/api/div-payment-method', function (req, res) {
             })
         }
     })
+});
+
+app.get('/api/fungeon_top', function (req, res) {
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query(`DROP view IF EXISTS fungeontranscount;
+CREATE VIEW fungeonTransCount AS(
+SELECT f.address as locn, COUNT(a.business_license_id) as NumTransactions
+FROM Animal a, Transactions t, Fungeon f
+WHERE a.AnimalID = t.animalid AND a.business_license_id = f.business_license_id
+GROUP BY f.business_license_id);
+select locn, numtransactions
+from fungeontranscount
+where numtransactions = (
+    select max(numtransactions)
+    from fungeontranscount);`, (err, table) => {
+        
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    console.log(res)
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    });
+});
+
+app.get('/api/best_seller', function (req, res) {
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query(` select a.name, a.animalid, count(t.transid)
+                from animal a, transactions t
+                where t.animalid = a.animalid
+                group by a.animalid
+                order by count(t.transid) desc
+                limit 1;
+            `, (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    });
 });
 
 app.get('/', (req, res) => {

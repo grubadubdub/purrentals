@@ -30,10 +30,13 @@ export default class TCustManagement extends Component {
                                 {animals[i].name}
                             </Item.Header>
                             <Item.Description>
-                                {animals[i].diet}
+                                {animals[i].address}
+                            </Item.Description>
+                            <Item.Description>
+                                {animals[i].custid}
                             </Item.Description>
                             <Item.Extra>
-                                <Label>{animals[i].type_of_clinic}</Label>
+                                <Label>Phone: {animals[i].phone_number}</Label>
                         </Item.Extra>
                         {/* <Item.Content>
                             {animals[i].}

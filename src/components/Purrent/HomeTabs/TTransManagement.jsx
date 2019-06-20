@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
-import { Dropdown, Button, Form } from 'semantic-ui-react';
+import { Dropdown, Button, Form, Table, Header } from 'semantic-ui-react';
 import axios from 'axios'
 
 export default class TTransManagement extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    state = {
             search: '',
-            input: ''
+            input: '',
+            transactions: [],
         }
-    }
+    
     searchOptions = [
         { key: 'name', text: 'Customer Name', value: 'name' },
         { key: 'custid', text: 'Customer ID', value: 'custid' },
@@ -28,6 +27,7 @@ export default class TTransManagement extends Component {
         await axios.post('/api/transactions-all', data)
             .then(res => {
                 if (res.status === 200) {
+                    this.setState({transactions: res.data})
                     /*do something wih response.json()*/
                     // console.log(response)
                     // return response.json();
@@ -41,11 +41,29 @@ export default class TTransManagement extends Component {
             });
 
     }
+
+    createItem = () => {
+        let trans = this.state.transactions
+        if (trans.length > 1) {
+            let items = []
+            for (var i = 0, len = trans.length; i < len; i++) {
+                items.push(
+                    <Table.Row key={trans[i].transid}>
+                    <Table.Cell>{trans[i].transid}</Table.Cell>
+                    <Table.Cell>{trans[i].price}</Table.Cell>
+                    <Table.Cell>{trans[i].date}</Table.Cell>
+                    <Table.Cell>{trans[i].animalid}</Table.Cell>
+                    <Table.Cell>{trans[i].custid}</Table.Cell>
+                    </Table.Row>
+                  )
+            }
+            return items
+        }
+    }
+
     render() {
         return (
-            // <div>
-
-            //     <Button.Group basic attached='bottom'>
+            <div>
             <Form>
                 <Form.Field>
                             <label htmlFor='search'>Search by:</label>
@@ -70,6 +88,26 @@ export default class TTransManagement extends Component {
                     this.makeFetch(this.state)
                 }}> Search </Button>
             </Form>
+            <div>
+                <Header>display all transactions for dis customer</Header>
+                <h1>{this.state.custid}</h1>
+                <Table celled>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Transaction ID</Table.HeaderCell>
+                    <Table.HeaderCell>Price</Table.HeaderCell>
+                    <Table.HeaderCell>Date</Table.HeaderCell>
+                    <Table.HeaderCell>Animal ID</Table.HeaderCell>
+                    <Table.HeaderCell>Customer ID</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                  {this.createItem()}
+                </Table.Body>
+              </Table>
+            </div>
+            </div>
         )
     }
 }

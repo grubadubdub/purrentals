@@ -2,16 +2,18 @@ import React, { Component } from 'react'
 import { Grid, Header, Form, FormGroup, Button, Table } from 'semantic-ui-react';
 import axios from 'axios'
 export default class TTrackByPayment extends Component {
+    
     state = {
         visa: false,
         mc: false,
         debit: false,
         cash: false,
+        transactions: []
     }
 
     makeFetch = async (data) => {
         console.log(data)
-        let opts = {
+        var opts = {
             visa: '',
             mc: '',
             debit: '',
@@ -29,10 +31,9 @@ export default class TTrackByPayment extends Component {
         console.log(opts)
         await axios.post('/api/div/payment-method', opts)
             .then(res => {
+                console.log('result')
                 if (res.status === 200) {
-                    /*do something wih response.json()*/
-                    // console.log(response)
-                    // return response.json();
+                    this.setState({transactions: res.data})
                 } if (res.status === 500) {
                     alert('server side error')
                 } else if (res.status === 400) {
@@ -59,6 +60,28 @@ export default class TTrackByPayment extends Component {
         console.log(this.state)
         this.setState(prevState => ({ cash: !prevState.cash }))
     }
+
+    createItem = () => {
+        let trans = this.state.transactions
+        if (trans.length > 1) {
+            let items = []
+            for (var i = 0, len = trans.length; i < len; i++) {
+                items.push(
+                    <Table.Row key={trans[i].custid}>
+                    <Table.Cell>{trans[i].custid}</Table.Cell>
+                    {/* <Table.Cell>{trans[i].price}</Table.Cell>
+                    <Table.Cell>{trans[i].date}</Table.Cell>
+                    <Table.Cell>{trans[i].animalid}</Table.Cell>
+                    <Table.Cell>{trans[i].custid}</Table.Cell> */}
+                    </Table.Row>
+                  )
+            }
+            return items
+        }
+    }
+
+    
+
     render() {
         return (
             <Grid>
@@ -107,30 +130,19 @@ export default class TTrackByPayment extends Component {
                     </Form>
                 </Grid.Row>
                 <Table celled>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>CustID</Table.HeaderCell>
-                            <Table.HeaderCell> Name </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Customer ID</Table.HeaderCell>
+                    {/* <Table.HeaderCell>Start Date</Table.HeaderCell> */}
+                    {/* <Table.HeaderCell>End Date</Table.HeaderCell> */}
+                
+                  </Table.Row>
+                </Table.Header>
 
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>
-                                1
-                </Table.Cell>
-                            <Table.Cell>sum ting wong</Table.Cell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell>3</Table.Cell>
-                            <Table.Cell>wit mai dik</Table.Cell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell>8</Table.Cell>
-                            <Table.Cell>it miss u</Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
-                </Table>
+                <Table.Body>
+                  {this.createItem()}
+                </Table.Body>
+              </Table>
             </Grid>
 
         )

@@ -10,9 +10,9 @@ export default class TTransManagement extends Component {
         }
     
     searchOptions = [
-        { key: 'name', text: 'Customer Name', value: 'name' },
+        { key: 'name', text: 'Customer Name', value: 'c.name' },
         { key: 'custid', text: 'Customer ID', value: 'custid' },
-        { key: 'transid', text: 'Transaction ID', value: 'transid' }
+        { key: 'transid', text: 'Transaction ID', value: 't.transid' }
     ]
     
     handleDropdownChange = (e, data) => {
@@ -26,7 +26,10 @@ export default class TTransManagement extends Component {
         console.log(data)
         await axios.post('/api/transactions-all', data)
             .then(res => {
+                // console.log(e)
+                console.log(res.data)
                 if (res.status === 200) {
+                   console.log(res.data)
                     this.setState({transactions: res.data})
                     /*do something wih response.json()*/
                     // console.log(response)

@@ -656,7 +656,7 @@ app.post('/api/purrents/curr-purrent', function (req, res) {
 app.post('/api/animal-filter', function (req, res) {
     console.log(req.body)
     let filter = req.body.filter;
-    
+
 
     pool.connect((err, db, done) => {
         console.log(req.body);
@@ -872,6 +872,221 @@ app.post('/api/purrents/update', function (req, res) {
         }
     })
 });
+
+app.post('/api/transactions-all', function (req, res) {
+    let search = req.body.search;
+    let value = req.body.value;
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT t.*, r.*, p.* FROM transactions t LEFT JOIN rentals r ON t.transid = r.transid LEFT JOIN purrchases p ON t.transid = p.transid WHERE " + search + " = $1", [value], (err, table) => {
+                // console.log(table.rows)
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('DNE');
+                        res.status(400).send('not found!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/all-purrents', function (req, res) {
+    console.log('customer transactions\n');
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT p.*, w.*, f.* FROM purrent_manages p LEFT JOIN workertype w ON p.workerid = w.workerid LEFT JOIN fungeon f ON p.business_license_id = f.business_license_id;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/animals', function (req, res) {
+    console.log('customer transactions\n');
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM animal;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/get_purrks', function (req, res) {
+    console.log('customer transactions\n');
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM purrks;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/fungeons', function (req, res) {
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM purrks;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.post('/api/rental-between-dates', function (req, res) {
+    let custid = req.body.custid;
+    let start = req.body.start;
+    // let end = req.body.end;
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            db.query("SELECT * FROM transactions t, rentals r, animal a WHERE r.transid = t.transid AND t.animalid = a.animalid AND t.custid = $1 AND $2::date >= r.start_date", [custid, start], (err, table) => {
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log(table)
+                    console.log(table.rows)
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('animals were found!\n');
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('combination was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.post('/api/div-payment-method', function (req, res) {
+    let visa = req.body.visa;
+    let mc = req.body.mc;
+    let debit = req.body.debit;
+    let cash = req.body.cash;
+    console.log('divison')
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('error fetching data\n');
+        }
+        else {
+            let sel = "";
+            if (visa!=="") {
+                sel = sel + "i.payment_method = \'VISA\' OR ";
+            }
+            if (mc!=="") {
+                sel = sel + "i.payment_method = \'MC\' OR ";
+            }
+            if (debit!=="") {
+                sel = sel + "i.payment_method = \'DEBIT\' OR ";
+            }
+            if (cash!=="") {
+                sel = sel + "i.payment_method = \'CASH\' OR ";
+            }
+            sel = sel.substring(0, sel.length - 3);
+            console.log(sel);
+            db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    if (table && table.rows && table.rows.length != 0) {
+                        console.log('payments were found!\n');
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('combination was NOT found!\n');
+                        res.status(400).send(false);
+                    }
+                }
+            })
+        }
+    })
+});
+
 app.get('/', (req, res) => {
     res.send('HALLO')
 })

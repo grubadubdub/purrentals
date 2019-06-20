@@ -21,18 +21,10 @@ class Statistics extends Component {
                 alert('something went wrong loading statistic')
             }
         })
-        fetch('/api/worst_seller')
-        .then(res => {
-            if (res.status === 200) {
-                res.json().then(worstseller => this.setState({ worstseller: worstseller }))
-            } else {
-                alert('something went wrong loading statistics')
-            }
-        })
         fetch('/api/ytd_sales')
         .then(res => {
             if (res.status === 200) {
-                res.json().then(ytdsales => this.setState({ ytd: ytdsales }))
+                res.json().then(ytdsales => this.setState({ ytd: ytdsales[0].sum }))
             } else {
                 alert('something went wrong loading statistics')
             }
@@ -138,6 +130,7 @@ class Statistics extends Component {
     }
 
     render() {
+        console.log(this.state)
         return(
             <Grid columns={3} divided>
                 <Grid.Row stretched>

@@ -32,8 +32,8 @@ export default class EmpPosting extends Component {
         //             console.log(e)
         //         })
         // })
-        await axios.post('/api/customers/animal-filter', data)
-            .then((res) => {
+        await axios.post('/api/animal-filter', data)
+            .then(res => {
                 if (res.status === 500)
                     alert('server side error')
                 else if (res.status === 400) 
@@ -45,6 +45,7 @@ export default class EmpPosting extends Component {
             }).catch(e => {
                 console.log(e)
             });
+
     }
 
     

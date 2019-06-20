@@ -5,7 +5,9 @@ class Statistics extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            bestseller: null,
+            bsName: null,
+            bsCount: null,
+            bsID: null,
             worstseller: null,
             ytd: null,
             bestperformer: null,
@@ -16,27 +18,29 @@ class Statistics extends Component {
         fetch('/api/best_seller')
         .then(res => {
             if (res.status === 200) {
-                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+                
+                res.json().then(bestseller => this.setState({ bsName: bestseller[0].name, bsCount: bestseller[0].count, bsID: bestseller[0].animalid }))
             } else {
                 alert('something went wrong loading statistic')
             }
         })
-        fetch('/api/ytd_sales')
-        .then(res => {
-            if (res.status === 200) {
-                res.json().then(ytdsales => this.setState({ ytd: ytdsales[0].sum }))
-            } else {
-                alert('something went wrong loading statistics')
-            }
-        })
-        fetch('/api/fungeon_top')
-        .then(res => {
-            if (res.status === 200) {
-                res.json().then(topfungeon => this.setState({ topfungeon: topfungeon }))
-            } else {
-                alert('something went wrong loading statistics')
-            }
-        })
+        .then(fetch('/api/ytd_sales')
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(ytdsales => this.setState({ ytd: ytdsales[0].sum }))
+                } else {
+                    alert('something went wrong loading statistics')
+                }
+            }))
+        .then(
+            fetch('/api/fungeon_top')
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(topfungeon => this.setState({ topfungeon: topfungeon }, console.log(topfungeon)))
+                } else {
+                    alert('something went wrong loading statistics')
+                }
+            }))
 }
     state = {
         // Best Boi
@@ -98,7 +102,6 @@ class Statistics extends Component {
     //         .then(bestfungeon => this.setState({ animals: bestfungeon.rows }))
     // }
 
-    
 
     // Create card for summary view
     createCard = (name, attr1, attr2, attr3) => {
@@ -123,14 +126,13 @@ class Statistics extends Component {
         let dates = [];
 
         for(let i=0; i <= 5; i++) {
-            //dates.push(this.createCard(dues[i].name, dues[i].fungeon, dues[i].duedate, dues[i].customer));
+            //dates.push(this.createCard(dues[i].name, dues[i].fungeon, dues[i].duedate, dues[i].customer)); 
         }
 
         return dates;
     }
 
     render() {
-        console.log(this.state)
         return(
             <Grid columns={3} divided>
                 <Grid.Row stretched>
@@ -157,13 +159,13 @@ class Statistics extends Component {
                         <Segment circular inverted color='olive' style={{width: 175, height: 175}}>
                             <Header as='h2' inverted>
                                 YTD Sales
-                                <Header.Subheader>$100000</Header.Subheader>
+                                <Header.Subheader>${this.state.ytd}</Header.Subheader>
                             </Header>
                         </Segment>
                         </div>
 
                         <h3>Greatest Sale</h3> <Divider />
-                        {this.createCard('Gaylord Focker', 'Amt of sale', 'Fungeon', 'idk what to put here')}
+                        {this.createCard(this.state.bsName, 'Animal ID:', this.state.bsID, this.state.bsCount)}
 
                         <h3>Highest Sales Fungeon</h3> <Divider />
                         {this.createCard('Sum Ting Wong', 'From Fungeon x', 'Due by', 'Rented by')}

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Form, FormField, Label, Header, FormGroup, Button, Table } from "semantic-ui-react";
 import axios from 'axios'
 export default class TSpecial extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -10,7 +11,9 @@ export default class TSpecial extends Component {
       end: null,
     }
   }
+
   makeFetch = async (data) => {
+    console.log(data)
     await axios.post('/api/rental-between-dates')
         .then(res => {
             if (res.status === 200) {

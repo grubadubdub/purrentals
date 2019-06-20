@@ -21,7 +21,6 @@ const blidOptions = [
     { key: 73, value: 73, text: 73 },
 ]
 
-
 export default class AddEmp extends Component {
     state = {
         empid: null,
@@ -41,7 +40,7 @@ export default class AddEmp extends Component {
     makeFetch = async (data) => {
         // console.log('this is from a method') 
         const { history } = this.props;
-        
+        console.log(data)
         await Axios.post('/api/purrents/add', data)
           .then(response => {
             if (response.status === 500) {
@@ -55,7 +54,7 @@ export default class AddEmp extends Component {
       }
 
     render() {
-        const { value } = this.state
+        // const { value } = this.state
         return (
             <Grid>
                 <Grid.Row centered>

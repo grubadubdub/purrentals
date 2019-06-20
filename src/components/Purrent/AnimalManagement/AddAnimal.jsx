@@ -112,7 +112,7 @@ export default class AddAnimal extends Component {
                                 type='text'
                                 placeholder='Select type of animal'
                                 name='animaltype'
-                                options={this.animalOptions}
+                                options={animalOptions}
                                 onChange={this.handleDropdownChange}
                             />
                         </Form.Field>

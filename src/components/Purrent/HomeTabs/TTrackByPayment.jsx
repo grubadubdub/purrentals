@@ -2,9 +2,32 @@ import React, { Component } from 'react'
 import { Grid, Header, Form, FormGroup, Button, Table } from 'semantic-ui-react';
 import axios from 'axios'
 export default class TTrackByPayment extends Component {
+    state = {
+        visa: false,
+        mc: false,
+        debit: false,
+        cash: false,
+    }
 
     makeFetch = async (data) => {
-        await axios.post('/api/div/payment-method')
+        console.log(data)
+        let opts = {
+            visa: '',
+            mc: '',
+            debit: '',
+            cash: '',
+        }
+        if (this.state.visa) {
+            opts.visa = "Visa"
+        } if (this.state.mc) {
+            opts.mc = "MasterCard"
+        } if (this.state.debit) {
+            opts.debit = "Debit"
+        } if (this.state.cash) {
+            opts.cash = "Cash"
+        }
+        console.log(opts)
+        await axios.post('/api/div/payment-method', opts)
             .then(res => {
                 if (res.status === 200) {
                     /*do something wih response.json()*/
@@ -19,30 +42,6 @@ export default class TTrackByPayment extends Component {
                 console.error(error);
             });
 
-    }
-    makeOpts() {
-        let opts = {
-            visa: '',
-            mc: '',
-            debit: '',
-            cash: '',
-        }
-        if (this.state.visa) {
-            opts.visa = "Visa"
-        } if (this.state.mc) {
-            opts.visa = "MasterCard"
-        } if (this.state.debit) {
-            opts.visa = "Debit"
-        } if (this.state.cash) {
-            opts.visa = "Cash"
-        }
-        this.makeFetch(opts);
-    }
-    state = {
-        visa: false,
-        mc: false,
-        debit: false,
-        cash: false,
     }
     toggleVisa = (e) => {
         console.log(this.state)
@@ -104,7 +103,7 @@ export default class TTrackByPayment extends Component {
                                     onClick={this.toggleCash} />
                             </Form.Field>
                         </FormGroup>
-                        <Button onClick={() => this.makeOpts}> Find Customers </Button>
+                        <Button onClick={() => this.makeFetch(this.state)}> Find Customers </Button>
                     </Form>
                 </Grid.Row>
                 <Table celled>

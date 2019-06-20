@@ -29,6 +29,11 @@ app.use(function (req, res, next) {
 // ------------ REST API ------------ //
 
 // C U S T O M E R S
+app.post('/animal-filter', function (req, res) {
+    // let custid = 
+    res.send('')
+})
+
 
 app.post('/api/customers/misc-animal-info', function(req, res) {
     console.log(req.body)
@@ -150,7 +155,7 @@ app.post('/api/animals', function (req, res) {
         if (err)
             return console.error('error fetching data\n' + err)
         else {
-            // db.query("select * from animal", (err, table) => {
+            db.query("select * from animal", (err, table) => {
             if (err)
                 return console.log(err)
             else {
@@ -158,7 +163,8 @@ app.post('/api/animals', function (req, res) {
                 console.log('connection success, POST success')
             }
 
-        }
+        })
+    }
     })
 })
 
@@ -255,7 +261,6 @@ app.get('/api/animals', (req, res) => {
 
 app.post('/api/transactions', function (req, res) {
     let custid = req.body.custid;
-    console.log('customer transactions\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -263,7 +268,7 @@ app.post('/api/transactions', function (req, res) {
             res.status(500).send('Error fetching data\n');
         }
         else {
-            db.query("SELECT * FROM transactions WHERE custid = $1", [custid], (err, table) => {
+            db.query(`SELECT * FROM transactions WHERE custid = ${custid}`, (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');

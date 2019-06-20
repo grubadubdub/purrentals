@@ -2,27 +2,50 @@ import React, {Component} from 'react';
 import { Grid, Card, Segment, Header, Icon, Divider } from 'semantic-ui-react';
 
 class Statistics extends Component {
-    
-    makeFetch(data) {
-        console.log(data);
-        var request = new Request('http://localhost:3000/div-payment-method', {
-            method: 'POST',
-            header: new Headers( { 'Content-Type': 'application/json'}),
-            body: JSON.stringify(data)
-        });
-        fetch(request)
-        .then(response => {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error('Something went wrong on api server!');
-          }
-        }).catch(error => {
-            console.error(error);
-          });
-        
+    constructor(props) {
+        super(props)
+        this.state = {
+            bestseller: null,
+            worstseller: null,
+            ytd: null,
+            bestperformer: null,
+        }
     }
-
+  
+    componentDidMount() {
+        fetch('/api/best_seller')
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+            } else {
+                alert('something went wrong loading animals')
+            }
+        })
+        fetch('/api/best_seller')
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+            } else {
+                alert('something went wrong loading animals')
+            }
+        })
+        fetch('/api/best_seller')
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+            } else {
+                alert('something went wrong loading animals')
+            }
+        })
+        fetch('/api/best_seller')
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+            } else {
+                alert('something went wrong loading animals')
+            }
+        })
+}
     state = {
         // Best Boi
         BestSellerName: undefined,

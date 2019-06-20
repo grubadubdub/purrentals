@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -564,6 +564,7 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
+
             if (pack) {
                 sel  = sel + "info, ";
             }

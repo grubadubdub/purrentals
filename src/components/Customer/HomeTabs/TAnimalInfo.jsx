@@ -40,6 +40,7 @@ export default class TAnimalInfo extends Component {
         this.setState(prevState => ({ animaltype: !prevState.animaltype }))
     }
 
+
     createTuple = () => {
         let info = this.state.requested
         if (info.length > 1) {

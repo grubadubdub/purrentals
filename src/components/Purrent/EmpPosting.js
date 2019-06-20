@@ -78,14 +78,14 @@ export default class EmpPosting extends Component {
                                 {animals[i].name}
                             </Item.Header>
                             <Item.Description>
-                                {animals[i].diet}
+                                {animals[i].diettype}
                             </Item.Description>
                             <Item.Extra>
                                 <Label>{animals[i].type_of_clinic}</Label>
                         </Item.Extra>
-                        <Item.Content>
-                            
-                        </Item.Content>
+                        {/* <Item.Content>
+                            {animals[i].}
+                        </Item.Content> */}
                         </Item.Content>
                     </Item>)
             }

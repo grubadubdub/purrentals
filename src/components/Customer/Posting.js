@@ -18,7 +18,6 @@ class Posting extends Component {
     handleDropdownChange = (data) => {
         this.setState({ [data.name]: data.value }, async () => {
             console.log(this.state);
-            // const { history } = this.props
             await axios.post('/api/animal-filter', data)
                 .then((res) => {
                     if (res.status === 500) {

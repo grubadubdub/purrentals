@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Header, Form, FormGroup, Button, Table } from 'semantic-ui-react';
 import axios from 'axios'
 export default class TTrackByPayment extends Component {
-    
+
     state = {
         visa: false,
         mc: false,
@@ -28,10 +28,10 @@ export default class TTrackByPayment extends Component {
         } if (this.state.cash) {
             opts.cash = "Cash"
         }
-        console.log(opts)
+        console.log('what')
         await axios.post('/api/div/payment-method', opts)
             .then(res => {
-                console.log('result')
+                console.log(res.status)
                 if (res.status === 200) {
                     this.setState({transactions: res.data})
                 } if (res.status === 500) {

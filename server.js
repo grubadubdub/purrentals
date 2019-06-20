@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -1040,12 +1040,13 @@ app.post('/api/rental-between-dates', function (req, res) {
     })
 });
 
-app.post('/api/div-payment-method', function (req, res) {
-    let visa = req.body.visa;
-    let mc = req.body.mc;
-    let debit = req.body.debit;
-    let cash = req.body.cash;
-    console.log('divison')
+app.get('/api/div-payment-method', function (req, res) {
+    req = {visa: "Visa", mc: "MasterCard", debit: "", cash: ""}
+    let visa = req.visa;
+    let mc = req.mc;
+    let debit = req.debit;
+    let cash = req.cash;
+    // console.log(req)
     pool.connect((err, db, done) => {
         if (err) {
             console.error('error fetching data\n' + err);
@@ -1054,19 +1055,31 @@ app.post('/api/div-payment-method', function (req, res) {
         else {
             let sel = "";
             if (visa!=="") {
-                sel = sel + "i.payment_method = \'VISA\' OR ";
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method =" + " VISA ";
             }
-            if (mc!=="") {
-                sel = sel + "i.payment_method = \'MC\' OR ";
+            if (mc!=="" ) {
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = 'MC' ";
             }
             if (debit!=="") {
-                sel = sel + "i.payment_method = \'DEBIT\' OR ";
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = 'DEBIT'";
             }
             if (cash!=="") {
-                sel = sel + "i.payment_method = \'CASH\' OR ";
+                if (sel !== "") {
+                    sel = sel + " OR "
+                }
+                sel = sel + "i.payment_method = \'CASH\'";
             }
             sel = sel.substring(0, sel.length - 3);
-            console.log(sel);
+            console.log("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);");
             db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
                 if (err) {
                     console.log('Query error!\n' + err + '\n');

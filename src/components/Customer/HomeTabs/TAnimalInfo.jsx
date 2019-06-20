@@ -7,14 +7,16 @@ export default class TAnimalInfo extends Component {
     state = {
         package: false,
         diet: false,
-        animaltype: false
+        animaltype: false,
+        requested: []
     }
 
     makeFetch = async (data) => {
         await axios.post('/api/customers/misc-animal-info', data)
             .then(res => {
                 if (res.status === 200) {
-                    
+                    console.log(res.data)
+                    this.setState({ requested: res.data })
                 } if (res.status === 500) {
                     alert('server side error')
                 } else if (res.status === 400) {
@@ -38,9 +40,10 @@ export default class TAnimalInfo extends Component {
         this.setState(prevState => ({ animaltype: !prevState.animaltype }))
     }
 
-    // createTuple = () => {
-    //     let rows = 
-    // }
+    createTuple = () => {
+        console.log(this.state) 
+        let this.state.
+    }
 
     render() {
         return (
@@ -89,23 +92,7 @@ export default class TAnimalInfo extends Component {
                         </Table.Header>
 
                         <Table.Body>
-                            <Table.Row>
-                                <Table.Cell>
-                                    1
-                                </Table.Cell>
-                                <Table.Cell>paleo</Table.Cell>
-                                <Table.Cell>furry</Table.Cell>
-                            </Table.Row>
-                            <Table.Row>
-                                <Table.Cell>3</Table.Cell>
-                                <Table.Cell>vegan</Table.Cell>
-                                <Table.Cell>feathery</Table.Cell>
-                            </Table.Row>
-                            <Table.Row>
-                                <Table.Cell></Table.Cell>
-                                <Table.Cell>meat only</Table.Cell>
-                                <Table.Cell>scaly</Table.Cell>
-                            </Table.Row>
+                            {this.createTuple()}
                         </Table.Body>
                     </Table>
                 </Grid.Row>

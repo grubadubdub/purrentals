@@ -14,9 +14,7 @@ export default class TAnimalInfo extends Component {
         await axios.post('/api/customers/misc-animal-info', data)
             .then(res => {
                 if (res.status === 200) {
-                    /*do something wih response.json()*/
-                    // console.log(response)
-                    // return response.json();
+                    
                 } if (res.status === 500) {
                     alert('server side error')
                 } else if (res.status === 400) {

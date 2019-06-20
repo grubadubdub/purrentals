@@ -354,9 +354,9 @@ app.post('/api/curr-cust-pts', function (req, res) {
 });
 
 app.post('/api/customers/misc-animal-info', function (req, res) {
-    let info = req.body.info;
-    let diet = req.body.diet;
-    let animaltype = req.body.animaltype;
+    var pack = req.body.package
+    var diet = req.body.diet
+    var animaltype = req.body.animaltype
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -365,15 +365,17 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
-            if (info==="true") {
+            if (pack) {
                 sel  = sel + "info, ";
             }
-            if (diet==="true") {
+            if (diet) {
                 sel  = sel + "diettype, ";
             }
-            if (animaltype==="true") {
+            if (animaltype) {
                 sel  = sel + "animaltype, ";
             }
+            sel = sel.substring(0,sel.length - 2)
+            console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")
 
             db.query(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo", (err, table) => {
 
@@ -382,8 +384,9 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
                     res.status(400).send('query error!\n');
                 } else {
                     console.log('Success!');
+                    console.table(res.rows)
                     if (table && table.rows && table.rows.length != 0) {
-                        res.status(200).send(table.rows[0]);
+                        res.status(200).send(table.rows);
                     } else {
                         console.log('custid DNE');
                         res.status(400).send('custid not found!');
@@ -448,51 +451,6 @@ app.post('/api/purrents/curr-purrent', function (req, res) {
         }
     })
 });
-
-
-// customers
-// POST CUSTOMERS
-app.post('/customers', function (req, res) {
-    var fname = req.body.fname
-    var addr = req.body.address
-    var phone = req.body.phone
-
-    pool.connect((err, db, done) => {
-        if (err)
-            return console.error('error fetching data\n' + err)
-        else {
-            db.query("select * from animal", (err, table) => {
-                if (err)
-                    return console.log(err)
-                else {
-                    console.table(table)
-                    console.log('connection success')
-
-                }
-            })
-        }
-    })
-})
-
-// member
-// app.put
-
-// GET
-app.get('/api/animals', (req, res) => {
-    pool.connect((err, db, done) => {
-        if (err)
-            return console.error('error fetching data\n' + err)
-        db.query(`select a.animalid, a.name, d.diettype, ct.type_of_clinic
-            from animal a, clinic c, clinictype ct, diet d
-            where a.clinid = c.clinid 
-            and c.typeid = ct.typeid
-            and d.dietid = a.dietid`, (err, table) => {
-            if (err)
-                return console.log(err)
-            res.json(table)
-        })
-    })
-})
 
 app.get('/', (req, res) => {
     res.send('HALLO')

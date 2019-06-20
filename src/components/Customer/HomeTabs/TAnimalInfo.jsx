@@ -41,8 +41,26 @@ export default class TAnimalInfo extends Component {
     }
 
     createTuple = () => {
-        console.log(this.state) 
-        let this.state.
+        let info = this.state.requested
+        if (info.length > 1) {
+            let items = []
+            for (var i = 0, len = info.length; i < len; i++) {
+                items.push(
+                    <Table.Row key={info[i].info}>
+                        <Table.Cell>
+                            {info[i].diettype}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {info[i].pack}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {info[i].type_of_clinic}
+                        </Table.Cell>
+                    </Table.Row>)
+            }
+            return items
+
+        }
     }
 
     render() {

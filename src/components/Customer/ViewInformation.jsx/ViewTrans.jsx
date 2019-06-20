@@ -10,14 +10,9 @@ export default class ViewTrans extends Component {
     }
 
     async componentDidMount() {
-        // console.log(this.state)
-        // const res = axios.post('/api/transactions', this.state);
-        // console.log(res)
-        // this.setState({ transactions:res.body  })
         await axios.post('/api/transactions', this.state)
         .then(res => {
             if (res.status === 200) {
-                console.log('res.data: ' + res.data);
                 this.setState({transactions: res.data});
             } else 
                 alert('ooops')
@@ -26,12 +21,11 @@ export default class ViewTrans extends Component {
 
     createItem = () => {
         let trans = this.state.transactions
-        console.log(trans)
         if (trans.length > 1) {
             let items = []
             for (var i = 0, len = trans.length; i < len; i++) {
                 items.push(
-                    <Table.Row>
+                    <Table.Row key={trans[i].transid}>
                     <Table.Cell>{trans[i].transid}</Table.Cell>
                     <Table.Cell>{trans[i].price}</Table.Cell>
                     <Table.Cell>{trans[i].date}</Table.Cell>

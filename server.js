@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'schoolsux',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 4000
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -29,9 +29,10 @@ app.use(function (req, res, next) {
 // ------------ REST API ------------ //
 
 // C U S T O M E R S
-app.post('/animal-filter', function (req, res) {
+app.get('/api/animal-filter', function (req, res) {
     // let custid = 
-    res.send('')
+    console.log(req.body)
+    res.status(200).send('at animal fil')
 })
 
 

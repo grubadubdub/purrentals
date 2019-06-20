@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
-import { Grid, Button, Item, Label, Icon } from 'semantic-ui-react';
+import { Grid, Button, Item, Label, Icon, Table, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom'
+import Axios from 'axios';
 
 export default class RedeemPurks extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
+   state = {
+            custid: this.props.location.state,
             purrks: [],
         }
-    }
+    
 
-    componentDidMount() {
-        fetch('/api/customers/redeem-purrks')
+    async componentDidMount() {
+        console.log(this.state)
+        await Axios.post('/api/customers/redeem-purrks', this.state)
             .then(response => {
+                console.log(response.data)
                 if (response.status === 200) {
-                    return response.json();
+                    this.setState({purrks: [response.data]})
+                    console.log(this.state)
                 } else {
                     throw new Error('Something went wrong on api server!');
                 }
@@ -24,47 +27,47 @@ export default class RedeemPurks extends Component {
     }
 
     createItem = () => {
-        let purrks = this.state.purrks
-        if (purrks.length > 1) {
+        let trans = this.state.purrks
+        console.log(trans)
+        if (trans.length > 0) {
             let items = []
-            for (var i = 0, len = purrks.length; i < len; i++) {
+            for (var i = 0, len = trans.length; i < len; i++) {
+                console.log(trans[i].purrks)
                 items.push(
-                    <Item key={purrks[i].id}>
-                        <Item.Content>
-                            <Item.Header as='a'>
-                                {purrks[i].name}
-                            </Item.Header>
-                            <Item.Description>
-                                {purrks[i].diet}
-                            </Item.Description>
-                            <Item.Extra>
-                                <Label>Feathery uwu</Label>
-                                <Button primary floated='left'>
-                                    Rent
-                      <Icon name='right chevron' />
-                                </Button>
-                                <Button primary floated='left'>
-                                    Buy
-                      <Icon name='right chevron' />
-                                </Button>
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>)
+                    <Table.Row key={trans[i].points_required}>
+                    <Table.Cell>{trans[i].points_required}</Table.Cell>
+                    <Table.Cell>{trans[i].info}</Table.Cell>
+                    {/* <Table.Cell>{trans[i].date}</Table.Cell>
+                    <Table.Cell>{trans[i].animalid}</Table.Cell>
+                    <Table.Cell>{trans[i].custid}</Table.Cell> */}
+                    </Table.Row>
+                  )
             }
             return items
         }
-    };
+    }
 
     render() {
         return (
-            <Grid>
-                <Grid.Row centered>
-                    {this.createItem()}
-                    <Link to='/customer'>
-                        <Button color='yellow'> Click here to return home </Button>
-                    </Link>
-                </Grid.Row>
-            </Grid>
+            <div>
+                <Header>display all redeemables for dis customer</Header>
+                <h1>{this.state.custid}</h1>
+                <Table celled>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Points Required</Table.HeaderCell>
+                    <Table.HeaderCell>Redeemable</Table.HeaderCell>
+                    {/* <Table.HeaderCell>Date</Table.HeaderCell>
+                    <Table.HeaderCell>Animal ID</Table.HeaderCell>
+                    <Table.HeaderCell>Customer ID</Table.HeaderCell> */}
+                  </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                  {this.createItem()}
+                </Table.Body>
+              </Table>
+            </div>
         )
     }
 }

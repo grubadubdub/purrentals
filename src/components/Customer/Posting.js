@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Item, Label, Icon, Form, FormGroup, Dropdown } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom'
-import Axios from 'axios';
+import axios from 'axios';
 //import Routes from './../Route'
 
 
@@ -18,8 +18,7 @@ class Posting extends Component {
     handleDropdownChange = (data) => {
         this.setState({ [data.name]: data.value }, async () => {
             console.log(this.state);
-            // const { history } = this.props
-            await Axios.post('/animal-filter', data)
+            await axios.post('/api/animal-filter', data)
                 .then((res) => {
                     if (res.status === 500) {
                         alert('server side error')
@@ -71,7 +70,7 @@ class Posting extends Component {
             let items = []
             for (var i = 0, len = animals.length; i < len; i++) {
                 items.push(
-                    <Item key={animals[i].id}>
+                    <Item key={animals[i].animalid}>
                         <Item.Content>
                             <Item.Header as='a'>
                                 {animals[i].name}
@@ -116,55 +115,6 @@ class Posting extends Component {
                 </Form>
                 <Item.Group divided>
                     {this.createItem()}
-
-
-                    {/* <Item>
-                        <Item.Content>
-                            <Item.Header as='a'>Mike Hawk</Item.Header>
-                            <Item.Description>Is long and hard, in all seriousness, i think care package
-                                deets can go here
-                </Item.Description>
-                            <Item.Extra>
-                                <Label>Scaly</Label>
-                                <NavLink to={{ pathname: '/new-rental', state: this.state.custid }}>
-                                    <Button primary floated='left'> Rent <Icon name='right chevron' /></Button>
-                                </NavLink>
-                                <NavLink to={{ pathname: '/new-purrchase', state: this.state.custid }}>
-                                    <Button primary floated='left'> Buy <Icon name='right chevron' /></Button>
-                                </NavLink>
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>
-
-                    <Item>
-                        <Item.Content>
-                            <Item.Header as='a'>Daddy</Item.Header>
-                            <Item.Description>Wants a thirsty, furry little boy uwuwuwuwuwuwuwuwu</Item.Description>
-                            <Item.Extra>
-                                <Label>Feathery uwu</Label>
-                                <Button primary floated='left'> Rent </Button>
-                                <Button primary floated='left'> Buy </Button>
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>
-
-                    <Item>
-                        <Item.Content>
-                            <Item.Header as='a'>BDSM</Item.Header>
-                            <Item.Description>I'm into BDSM; Beautiful Dogs Surrounding Me</Item.Description>
-                            <Item.Extra>
-                                <Label>Furry</Label>
-                                <Link to='/customer-rental'>
-                                    <Button primary floated='left'>
-                                        Rent
-                    </Button>
-                                </Link>
-                                <Button primary floated='left'>
-                                    Buy
-                    </Button>
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item> */}
                 </Item.Group>
             </div>
         );

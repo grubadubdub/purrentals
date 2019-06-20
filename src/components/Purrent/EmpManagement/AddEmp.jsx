@@ -25,7 +25,7 @@ export default class AddEmp extends Component {
     state = {
         empid: null,
         addr: null,
-        workertype: null,
+        workerid: null,
         salary: null,
         blid: '000',
         phone: null
@@ -87,7 +87,7 @@ export default class AddEmp extends Component {
                             />
                         </Form.Field>
                         <Form.Field>
-                            <label htmlFor='workertype'> Type of Worker:</label>
+                            <label htmlFor='workerid'> Type of Worker:</label>
                             <Dropdown
                                 type='string'
                                 placeholder='Select type of worker'

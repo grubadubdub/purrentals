@@ -195,7 +195,7 @@ app.post('/api/customers/add', function (req, res) {
     let name = req.body.name
     let address = req.body.address
     let pnum = req.body.pnum
-
+    console.log('adding cust')
     pool.connect((err, db, done) => {
         if (err) {
             console.error('error fetching data\n' + err);
@@ -562,16 +562,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
-<<<<<<< HEAD
-            if (pack) {
-                sel  = sel + "info, ";
-            }
-            if (diet) {
-                sel  = sel + "diettype, ";
-            }
-            if (animaltype) {
-                sel  = sel + "animaltype, ";
-=======
             if (info === "true") {
                 sel = sel + "info, ";
             }
@@ -580,7 +570,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
             }
             if (animaltype === "true") {
                 sel = sel + "animaltype, ";
->>>>>>> c8f39beaf29145cd6fcc56cf69024d1a51e19b14
             }
             sel = sel.substring(0,sel.length - 2)
             console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")

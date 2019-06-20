@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -563,16 +563,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
         }
         else {
             let sel = "SELECT ";
-<<<<<<< HEAD
-            if (pack) {
-                sel  = sel + "info, ";
-            }
-            if (diet) {
-                sel  = sel + "diettype, ";
-            }
-            if (animaltype) {
-                sel  = sel + "animaltype, ";
-=======
             if (info === "true") {
                 sel = sel + "info, ";
             }
@@ -581,7 +571,6 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
             }
             if (animaltype === "true") {
                 sel = sel + "animaltype, ";
->>>>>>> 5c774466bc83285976156c9b0d81acacb838004c
             }
             sel = sel.substring(0,sel.length - 2)
             console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")

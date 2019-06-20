@@ -42,7 +42,7 @@ class PurrentView extends Component {
                     pane: {
                         key: 'modEmployee',
                         content: (
-                            <TEmpManagement />
+                            <TEmpManagement empid={this.state.empid}/>
                         ),
                     },
                 },

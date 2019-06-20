@@ -1,36 +1,31 @@
 import React, { Component } from 'react';
 import { Form, Button, Grid, Header } from 'semantic-ui-react';
+import axios from 'axios';
 import { Link } from "react-router-dom";
 
 export default class EmpLogin extends Component {
-    state = { empid: 'EmpID' }
+    constructor(props) {
+        super(props);
+        this.state = { empid: 'EmpID' }
+    }
 
     getID = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    saveCustomer = (input) => {
-        this.setState({empid: input});
-
-        console.log(this.state);
-
-        // Send req to server
-        var request = new Request('https://localhost:3000/api/purrent/emp-login', {
-            method: 'POST',
-            header: new Headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(input),
-        });
-
-        try {
-            fetch(request).then(response => {
-                response.json();
-            });
-        } catch {throw new Error("Could not find custid");}
-    };
+    makeFetch = async (data) => {
+        const { history } = this.props
+        const res = await axios.post('/api/purrents/login', data);
+        this.setState({ empid: res.data })
+        if (res.status === 500) {
+            alert("some thing is wrong, try again")
+        } else
+            if (res.status === 200) {
+                history.push('/purrent', res.data)
+            }
+    }
 
     render() {
-        const { value } = this.state.empid;
-
         return (
             <Grid>
                 <Header>
@@ -43,9 +38,9 @@ export default class EmpLogin extends Component {
                             <input type='text' name='empid' placeholder='empid' onChange={this.getID}/>
                         </Form.Field>
 
-                        <Link to={{ pathname: '/purrent', state: this.state.empid }}>
-                            <Button onClick={()=>this.saveCustomer(value)}> Login </Button>
-                        </Link>
+                        {/* <Link to={{ pathname: '/purrent', state: this.state.empid }}> */}
+                            <Button onClick={()=>this.makeFetch(this.state)}> Login </Button>
+                        {/* </Link> */}
                         {/* <Form success>
                 <Message success header='Form Completed' content="You're all signed up!" /> */}
                     </Form>

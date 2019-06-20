@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
 
 const animalOptions = [
     {
@@ -67,24 +68,20 @@ export default class UpdateAnimal extends Component {
         packageid: null,
     }
     
-    makeFetch(data) {
+    makeFetch = async (data) => {
         console.log(data);
-        var request = new Request('http://localhost:3000/update-animal', {
-            method: 'POST',
-            header: new Headers( { 'Content-Type': 'application/json'}),
-            body: JSON.stringify(data)
-        });
-        fetch(request)
+        const {history} = this.props;
+        
+        await Axios.post('/api/purrents/update-animal', data)
         .then(response => {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error('Something went wrong on api server!');
+          if (response.status === 500) {
+              alert('Was not able to update animal');
+          } else if(response.status === 200) {
+              history.push('/purrent', response.data)
           }
         }).catch(error => {
             console.error(error);
-          });
-        
+          });   
     }
     handleTextChange = e => {
         this.setState({[e.target.name]: e.target.value}, console.log(this.state))      

@@ -11,7 +11,7 @@ export default class TAnimalInfo extends Component {
     }
 
     makeFetch = async (data) => {
-        await axios.post('/api/customers/misc-animal-info')
+        await axios.post('/api/customers/misc-animal-info', data)
             .then(res => {
                 if (res.status === 200) {
                     /*do something wih response.json()*/
@@ -39,6 +39,10 @@ export default class TAnimalInfo extends Component {
         console.log(this.state)
         this.setState(prevState => ({ animaltype: !prevState.animaltype }))
     }
+
+    // createTuple = () => {
+    //     let rows = 
+    // }
 
     render() {
         return (
@@ -90,7 +94,7 @@ export default class TAnimalInfo extends Component {
                             <Table.Row>
                                 <Table.Cell>
                                     1
-        </Table.Cell>
+                                </Table.Cell>
                                 <Table.Cell>paleo</Table.Cell>
                                 <Table.Cell>furry</Table.Cell>
                             </Table.Row>

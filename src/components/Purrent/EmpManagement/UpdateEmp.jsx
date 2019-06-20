@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
 
 /* i don't know if it's better to query the options from our db or to include them here.
 it's much easier if we do it this way but idk if we'll get docked marks for hardcoding them
@@ -37,27 +38,24 @@ export default class UpdateEmp extends Component {
         this.setState({ [data.name]: data.value }, console.log(this.state))
 
     }
-    makeFetch(data) {
+    
+    makeFetch = async (data) => {
         // console.log('this is from a method')
         console.log(data);
-        var request = new Request('http://localhost:3000/api/purrents/update', {
-          method: 'POST',
-          header: new Headers({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify(data)
-        });
-        fetch(request)
+        const {history} = this.props;
+        
+        await Axios.post('/api/purrents/update', data)
           .then(response => {
-            if (response.status === 200) {
-              return response.json();
-            } else {
-              throw new Error('Something went wrong on api server!');
+            if (response.status === 500) {
+                alert('something wrong, try again');
+            } else if(response.status === 200) {
+                history.push('/purrent', response.data);
             }
-          })
-          .catch(error => {
-            console.error(error);
+          }).catch(error => {
+            console.log(error);
           });
-    
-      }
+    }
+
     render() {
         const { value } = this.state
         return (

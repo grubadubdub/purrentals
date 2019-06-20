@@ -48,6 +48,49 @@ export default class EmpPosting extends Component {
             value: 'scaly'
         }
     ]
+
+    // componentDidMount() {
+    //     fetch('/api/animals')
+    //         .then(res => {
+    //             if (res.status === 200) {
+    //                 res.json().then(anims => this.setState({ animals: anims.rows }))
+    //             } else {
+    //                 alert('something went wrong loading animals')
+    //             }
+    //         })
+    // }
+    // createItem = () => {
+    //     let animals = this.state.animals
+    //     if (animals.length > 1) {
+    //         let items = []
+    //         for (var i = 0, len = animals.length; i < len; i++) {
+    //             items.push(
+    //                 <Item key={animals[i].id}>
+    //                     <Item.Content>
+    //                         <Item.Header as='a'>
+    //                             {animals[i].name}
+    //                         </Item.Header>
+    //                         <Item.Description>
+    //                             {animals[i].diet}
+    //                         </Item.Description>
+    //                         <Item.Extra>
+    //                             <Label>Feathery uwu</Label>
+    //                             <Button primary floated='left'>
+    //                                 Update
+    //                   <Icon name='right chevron' />
+    //                             </Button>
+    //                             <Button primary floated='left'>
+    //                                 Delete
+    //                   <Icon name='right chevron' />
+    //                             </Button>
+    //                         </Item.Extra>
+    //                     </Item.Content>
+    //                 </Item>)
+    //         }
+    //         return items
+    //     }
+    // };
+
     render() {
         return (
             <div>
@@ -67,14 +110,14 @@ export default class EmpPosting extends Component {
                 </Form>
                 <Item.Group divided>
                     <Item>
-                        <Item.Content>
+                        {/* {this.createItem()} */}
+                        {/* <Item.Content>
                             <Item.Header as='a'>Mike Hawk</Item.Header>
                             <Item.Description>Is long and hard, in all seriousness, i think care package
                                 deets can go here
                 </Item.Description>
                             <Item.Extra>
                                 <Label>Scaly</Label>
-                                {/* the button/routing doesnt work on this */}
                                 <NavLink to='/update-animal'>
                                     <Button primary floated='left'>
                                         Update
@@ -122,7 +165,7 @@ export default class EmpPosting extends Component {
                         <Icon name='right chevron' />
                                 </Button>
                             </Item.Extra>
-                        </Item.Content>
+                        </Item.Content> */}
                     </Item>
                 </Item.Group>
                 {/* <Routes/> */}

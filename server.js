@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
 })
 
 // express instance 
@@ -143,7 +143,7 @@ app.post('/api/animals', function (req, res) {
         if (err)
             return console.error('error fetching data\n' + err)
         else {
-            // db.query("select * from animal", (err, table) => {
+            db.query("select * from animal", (err, table) => {
             if (err)
                 return console.log(err)
             else {
@@ -151,7 +151,8 @@ app.post('/api/animals', function (req, res) {
                 console.log('connection success, POST success')
             }
 
-        }
+        })
+    }
     })
 })
 

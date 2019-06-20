@@ -8,7 +8,8 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      custid: ''
+      custid: '',
+      name: ''
     }
   }
   getID = (e) => {
@@ -18,7 +19,7 @@ export default class Login extends Component {
   makeFetch = async (data) => {
     const { history } = this.props
     const res = await axios.post('/api/customers/login', data);
-    this.setState({ custid: res.data })
+    this.setState({ custid: res.data.custid })
     if (res.status === 500) {
       alert("some thing is wrong, try again")
     } else

@@ -7,7 +7,7 @@ export default class TAnimalInfo extends Component {
     state = {
         package: false,
         diet: false,
-        animaltype: false,
+        animaltype: false
     }
 
     makeFetch = async (data) => {

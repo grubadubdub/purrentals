@@ -6,10 +6,11 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'schoolsux',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 4000
+    // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
 // express instance 
@@ -29,6 +30,11 @@ app.use(function (req, res, next) {
 
 // C U S T O M E R S
 
+app.post('/api/customers/misc-animal-info', function(req, res) {
+    console.log(req.body)
+    const { package, diet, animaltype } = req.body
+})
+
 app.post('/api/customers/new-rental', function (req, res) {
   let custid = req.body.custid
   let animalid = req.body.animalid
@@ -40,6 +46,7 @@ app.post('/api/customers/new-rental', function (req, res) {
   pool.connect((err, db, done) => {
     if (err) {
         console.error('error fetching data\n' + err);
+        console.log(err)
         res.status(500).send();
     } else {
         db.query("insert into transactions values (default, $1, $2, $3, $4);", [price, start, animalid, custid], (err, table) => {

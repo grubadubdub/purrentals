@@ -655,7 +655,7 @@ app.post('/api/purrents/curr-purrent', function (req, res) {
 app.post('/api/animal-filter', function (req, res) {
     console.log(req.body)
     let filter = req.body.filter;
-    
+
 
     pool.connect((err, db, done) => {
         console.log(req.body);
@@ -871,6 +871,63 @@ app.post('/api/purrents/update', function (req, res) {
         }
     })
 });
+
+app.post('/api/transactions-all', function (req, res) {
+    let search = req.body.search;
+    let value = req.body.value;
+    pool.connect((err, db, done) => {
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT t.*, r.*, p.* FROM transactions t LEFT JOIN rentals r ON t.transid = r.transid LEFT JOIN purrchases p ON t.transid = p.transid WHERE " + search + " = $1", [value], (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('DNE');
+                        res.status(400).send('not found!');
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/api/all-purrents', function (req, res) {
+    console.log('customer transactions\n');
+    pool.connect((err, db, done) => {
+        console.log('connected\n');
+        if (err) {
+            console.error('error fetching data\n' + err);
+            res.status(500).send('Error fetching data\n');
+        }
+        else {
+            db.query("SELECT p.*, w.*, f.* FROM purrent_manages p LEFT JOIN workertype w ON p.workerid = w.workerid LEFT JOIN fungeon f ON p.business_license_id = f.business_license_id;", (err, table) => {
+                console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
+                    } else {
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
+                    }
+                }
+            })
+        }
+    })
+});
+
 app.get('/', (req, res) => {
     res.send('HALLO')
 })

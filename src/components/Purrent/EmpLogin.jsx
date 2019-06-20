@@ -15,14 +15,16 @@ export default class EmpLogin extends Component {
 
     makeFetch = async (data) => {
         const { history } = this.props
-        const res = await axios.post('/api/purrents/login', data);
-        this.setState({ empid: res.data })
-        if (res.status === 500) {
-            alert("some thing is wrong, try again")
-        } else
-            if (res.status === 200) {
+        await axios.post('/api/purrents/login', data)
+        .then(res => {
+            if(res.status === 500) {
+                alert('Prob');
+            } else if (res.status === 200) {
                 history.push('/purrent', res.data)
             }
+        }).catch(error => {
+            console.log(error);
+        })
     }
 
     render() {

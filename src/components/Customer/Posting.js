@@ -25,7 +25,8 @@ class Posting extends Component {
                     } else if (res.status === 400) {
                         alert('client side error')
                     } else if (res.status === 200) {
-                        /*display filtered info*/
+                        console.log(res.data)
+                        this.setState({animals: res.data})
                     } else (
                         alert('error')
                     )

@@ -47,15 +47,15 @@ export default class TAnimalInfo extends Component {
             let items = []
             for (var i = 0, len = info.length; i < len; i++) {
                 items.push(
-                    <Table.Row key={info[i].info}>
+                    <Table.Row key={i}>
                         <Table.Cell>
                             {info[i].diettype}
                         </Table.Cell>
                         <Table.Cell>
-                            {info[i].pack}
+                            {info[i].info}
                         </Table.Cell>
-                        <Table.Cell>
-                            {info[i].type_of_clinic}
+                        <Table.Cell>    
+                            {info[i].animaltype}
                         </Table.Cell>
                     </Table.Row>)
             }

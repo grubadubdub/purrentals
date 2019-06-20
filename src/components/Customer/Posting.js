@@ -76,7 +76,7 @@ class Posting extends Component {
                                 {animals[i].name}
                             </Item.Header>
                             <Item.Description>
-                                {animals[i].diet}
+                                {animals[i].diettype}
                             </Item.Description>
                             <Item.Extra>
                                 <Label>{animals[i].type_of_clinic}</Label>

@@ -1,7 +1,7 @@
 let express = require('express')
 let bodyParser = require('body-parser')
 let pg = require('pg')
-const PORT = 4000
+const PORT = 9999
 
 let pool = new pg.Pool({
     host: 'localhost',
@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
 // app.delete
 
 // POST ANIMALS
-app.post('/animals', function (req, res) {
+app.post('/api/animals', function (req, res) {
     var fname = req.body.fname
     var addr = req.body.address
     var phone = req.body.phone
@@ -478,16 +478,15 @@ app.post('/customers', function (req, res) {
 // app.put
 
 // GET
-app.get('/animals', (req, res) => {
+app.get('/api/animals', (req, res) => {
     pool.connect((err, db, done) => {
         if (err)
             return console.error('error fetching data\n' + err)
-        db.query("select * from animal", (err, table) => {
-            if (err)
-                return console.log(err)
-            res.json(table)
-        })
-        db.query("select * from animal", (err, table) => {
+        db.query(`select a.animalid, a.name, d.diettype, ct.type_of_clinic
+            from animal a, clinic c, clinictype ct, diet d
+            where a.clinid = c.clinid 
+            and c.typeid = ct.typeid
+            and d.dietid = a.dietid`, (err, table) => {
             if (err)
                 return console.log(err)
             res.json(table)

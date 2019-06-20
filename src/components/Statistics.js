@@ -18,7 +18,7 @@ class Statistics extends Component {
             if (res.status === 200) {
                 res.json().then(bestseller => this.setState({ bestseller: bestseller }))
             } else {
-                alert('something went wrong loading statistic')
+                // alert('something went wrong loading statistic')
             }
         })
         fetch('/api/ytd_sales')
@@ -26,7 +26,7 @@ class Statistics extends Component {
             if (res.status === 200) {
                 res.json().then(ytdsales => this.setState({ ytd: ytdsales[0].sum }))
             } else {
-                alert('something went wrong loading statistics')
+                // alert('something went wrong loading statistics')
             }
         })
         fetch('/api/fungeon_top')
@@ -34,7 +34,7 @@ class Statistics extends Component {
             if (res.status === 200) {
                 res.json().then(topfungeon => this.setState({ topfungeon: topfungeon }))
             } else {
-                alert('something went wrong loading statistics')
+                // alert('something went wrong loading statistics')
             }
         })
 }

@@ -1040,12 +1040,13 @@ app.post('/api/rental-between-dates', function (req, res) {
     })
 });
 
-app.get('/api/div-payment-method', function (req, res) {
-    req = {visa: "Visa", mc: "MasterCard", debit: "", cash: ""}
-    let visa = req.visa;
-    let mc = req.mc;
-    let debit = req.debit;
-    let cash = req.cash;
+app.post('/api/div-payment-method', function (req, res) {
+    // req = {visa: "Visa", mc: "MasterCard", debit: "", cash: ""}
+    console.log(req.body)
+    let visa = req.body.visa;
+    let mc = req.body.mc;
+    let debit = req.body.debit;
+    let cash = req.body.cash;
     // console.log(req)
     pool.connect((err, db, done) => {
         if (err) {
@@ -1058,19 +1059,19 @@ app.get('/api/div-payment-method', function (req, res) {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
-                sel = sel + "i.payment_method =" + " VISA ";
+                sel = sel + "i.payment_method = \'VISA\'";
             }
             if (mc!=="" ) {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
-                sel = sel + "i.payment_method = 'MC' ";
+                sel = sel + "i.payment_method = \'MC\'";
             }
             if (debit!=="") {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
-                sel = sel + "i.payment_method = 'DEBIT'";
+                sel = sel + "i.payment_method = \'DEBIT\'";
             }
             if (cash!=="") {
                 if (sel !== "") {
@@ -1078,8 +1079,8 @@ app.get('/api/div-payment-method', function (req, res) {
                 }
                 sel = sel + "i.payment_method = \'CASH\'";
             }
-            sel = sel.substring(0, sel.length - 3);
-            console.log("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);");
+            // sel = sel.substring(0, sel.length - 3);
+            console.log(sel);
             db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
                 if (err) {
                     console.log('Query error!\n' + err + '\n');

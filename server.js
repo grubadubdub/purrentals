@@ -1041,13 +1041,11 @@ app.post('/api/rental-between-dates', function (req, res) {
 });
 
 app.post('/api/div-payment-method', function (req, res) {
-    // req = {visa: "Visa", mc: "MasterCard", debit: "", cash: ""}
     console.log(req.body)
     let visa = req.body.visa;
     let mc = req.body.mc;
     let debit = req.body.debit;
     let cash = req.body.cash;
-    // console.log(req)
     pool.connect((err, db, done) => {
         if (err) {
             console.error('error fetching data\n' + err);
@@ -1081,7 +1079,7 @@ app.post('/api/div-payment-method', function (req, res) {
                 sel = sel + "i.payment_method = \'CASH\'";
             }
             // sel = sel.substring(0, sel.length - 3);
-            console.log(sel);
+            console.log("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);");
             db.query("SELECT * from transactions AS t WHERE NOT EXISTS (SELECT i.transid FROM invoice_records AS i WHERE " + sel + " EXCEPT SELECT t2.transid FROM transactions AS t2 WHERE t2.transid = t.transid);", (err, table) => {
                 if (err) {
                     console.log(visa)
@@ -1121,11 +1119,16 @@ where numtransactions = (
     select max(numtransactions)
     from fungeontranscount)
     LIMIT 1;`, (err, table) => {
-
-                    console.log(req.body + '\n');
-                    if (err) {
-                        console.log('Query error!\n' + err + '\n');
-                        res.status(500).send('query error!\n');
+        
+                // console.log(req.body + '\n');
+                if (err) {
+                    console.log('Query error!\n' + err + '\n');
+                    res.status(500).send('query error!\n');
+                } else {
+                    console.log('Success!');
+                    // console.log(res)
+                    if (table && table.rows && table.rows.length != 0) {
+                        res.status(200).send(table.rows);
                     } else {
                         console.log('Success!');
                         console.log(res)

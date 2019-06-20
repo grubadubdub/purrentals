@@ -82,15 +82,10 @@ export default class EmpPosting extends Component {
                             </Item.Description>
                             <Item.Extra>
                                 <Label>{animals[i].type_of_clinic}</Label>
-                                <Button primary floated='left'>
-                                    Rent
-                      <Icon name='right chevron' />
-                                </Button>
-                                <Button primary floated='left'>
-                                    Buy
-                      <Icon name='right chevron' />
-                                </Button>
-                            </Item.Extra>
+                        </Item.Extra>
+                        <Item.Content>
+                            
+                        </Item.Content>
                         </Item.Content>
                     </Item>)
             }

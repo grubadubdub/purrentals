@@ -8,7 +8,7 @@ class AddCust extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      custid: null,
+      custid: '',
       name: '',
       address: '',
       pnum: ''
@@ -20,11 +20,17 @@ class AddCust extends Component {
   }   
 
   makeFetch = async (data) => {
-    console.log(this.state)
+    // console.log(this.state)
     const { history } = this.props
-    const res = await axios.post('/api/customers/signup', data);
-    console.log(res)
-    history.push('/purrent')
+    const res = await axios.post('/api/customers/add', data);
+    if (res.status === 200){
+      alert('success')
+          history.push('/purrent')
+        } 
+        else {
+          console.log('o no')
+        }
+
   }
 
   render() {

@@ -268,7 +268,7 @@ app.post('/api/purrents/login', function (req, res) {
                 } else {
                     if (table && table.rows && table.rows.length != 0) {
                         console.log('empid was found!\n');
-                        res.status(200).send(true);
+                        res.status(200).send(empid);
                     } else {
                         console.log('empid was NOT found!\n');
                         res.status(400).send(false);

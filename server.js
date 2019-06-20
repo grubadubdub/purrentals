@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'honeypot',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 8888
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 

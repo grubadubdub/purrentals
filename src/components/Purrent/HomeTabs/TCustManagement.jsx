@@ -24,7 +24,7 @@ export default class TCustManagement extends Component {
             let items = []
             for (var i = 0, len = animals.length; i < len; i++) {
                 items.push(
-                    <Item key={animals[i].id}>
+                    <Item key={animals[i].custid}>
                         <Item.Content>
                             <Item.Header as='a'>
                                 {animals[i].name}

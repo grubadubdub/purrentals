@@ -306,10 +306,10 @@ app.get('/api/animals', (req, res) => {
             return console.error('error fetching data\n' + err)
         db.query(
             `select a.animalid, a.name, d.diettype, ct.type_of_clinic
-                from animal a, clinic c, clinictype ct, diet d
-                where a.clinid = c.clinid 
-                and c.typeid = ct.typeid
-                and d.dietid = a.dietid`
+from animal a, clinic c, clinictype ct, diet d
+where a.clinid = c.clinid 
+and c.typeid = ct.typeid
+and d.dietid = a.dietid`
             , (err, table) => {
                 if (err)
                     return console.log(err)
@@ -653,9 +653,12 @@ app.post('/api/purrents/curr-purrent', function (req, res) {
     })
 });
 app.post('/api/animal-filter', function (req, res) {
+    console.log(req.body)
     let filter = req.body.filter;
+    
+
     pool.connect((err, db, done) => {
-        console.log('connected\n');
+        console.log(req.body);
         if (err) {
             console.error('error fetching data\n' + err);
             res.status(500).send('error fetching data\n');

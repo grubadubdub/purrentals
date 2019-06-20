@@ -21,7 +21,7 @@ class Statistics extends Component {
                 
                 res.json().then(bestseller => this.setState({ bsName: bestseller[0].name, bsCount: bestseller[0].count, bsID: bestseller[0].animalid }))
             } else {
-                alert('something went wrong loading statistic')
+                // alert('something went wrong loading statistic')
             }
         })
         .then(fetch('/api/ytd_sales')

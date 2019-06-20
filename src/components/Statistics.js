@@ -18,31 +18,31 @@ class Statistics extends Component {
             if (res.status === 200) {
                 res.json().then(bestseller => this.setState({ bestseller: bestseller }))
             } else {
-                alert('something went wrong loading animals')
+                alert('something went wrong loading statistic')
             }
         })
-        fetch('/api/best_seller')
+        fetch('/api/worst_seller')
         .then(res => {
             if (res.status === 200) {
-                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+                res.json().then(worstseller => this.setState({ worstseller: worstseller }))
             } else {
-                alert('something went wrong loading animals')
+                alert('something went wrong loading statistics')
             }
         })
-        fetch('/api/best_seller')
+        fetch('/api/ytd_sales')
         .then(res => {
             if (res.status === 200) {
-                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+                res.json().then(ytdsales => this.setState({ ytd: ytdsales }))
             } else {
-                alert('something went wrong loading animals')
+                alert('something went wrong loading statistics')
             }
         })
-        fetch('/api/best_seller')
+        fetch('/api/fungeon_top')
         .then(res => {
             if (res.status === 200) {
-                res.json().then(bestseller => this.setState({ bestseller: bestseller }))
+                res.json().then(topfungeon => this.setState({ topfungeon: topfungeon }))
             } else {
-                alert('something went wrong loading animals')
+                alert('something went wrong loading statistics')
             }
         })
 }

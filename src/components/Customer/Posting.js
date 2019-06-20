@@ -16,7 +16,9 @@ class Posting extends Component {
     }
 
     handleDropdownChange = (data) => {
+        console.log('in hangledrop')
         this.setState({ [data.name]: data.value }, async () => {
+            console.log('inside set ')
             console.log(this.state);
             await axios.post('/api/animal-filter', data)
                 .then((res) => {

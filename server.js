@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'honeypot',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 8888
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -575,7 +575,7 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
                 sel  = sel + "animaltype, ";
             }
             sel = sel.substring(0,sel.length - 2)
-            console.log(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")
+            console.log(sel + " DISTINCT FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")
 
             db.query(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo", (err, table) => {
 
@@ -883,7 +883,6 @@ app.post('/api/transactions-all', function (req, res) {
         }
         else {
             db.query("SELECT t.*, r.*, p.* FROM transactions t LEFT JOIN rentals r ON t.transid = r.transid LEFT JOIN purrchases p ON t.transid = p.transid WHERE " + search + " = $1", [value], (err, table) => {
-                // console.log(table.rows)
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
@@ -930,8 +929,7 @@ app.get('/api/all-purrents', function (req, res) {
     })
 });
 
-app.get('/api/animals', function (req, res) {
-    console.log('customer transactions\n');
+app.get('/api/ytd_sales', function (req, res) {
     pool.connect((err, db, done) => {
         console.log('connected\n');
         if (err) {
@@ -939,7 +937,7 @@ app.get('/api/animals', function (req, res) {
             res.status(500).send('Error fetching data\n');
         }
         else {
-            db.query("SELECT * FROM animal;", (err, table) => {
+            db.query("SELECT SUM(Price) FROM Transactions; ", (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');

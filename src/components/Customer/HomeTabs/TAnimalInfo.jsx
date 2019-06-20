@@ -49,10 +49,10 @@ export default class TAnimalInfo extends Component {
                 items.push(
                     <Table.Row key={i}>
                         <Table.Cell>
-                            {info[i].diettype}
+                            {info[i].info}
                         </Table.Cell>
                         <Table.Cell>
-                            {info[i].info}
+                            {info[i].diettype}
                         </Table.Cell>
                         <Table.Cell>    
                             {info[i].animaltype}

@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'cs304',
+    password: 'honeypot',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 5432
+    port: 8888
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -566,15 +566,15 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
             let sel = "SELECT ";
 
             if (pack) {
-                sel  = sel + "info, ";
+                sel = sel + "info, ";
             }
             if (diet) {
-                sel  = sel + "diettype, ";
+                sel = sel + "diettype, ";
             }
             if (animaltype) {
-                sel  = sel + "animaltype, ";
+                sel = sel + "animaltype, ";
             }
-            sel = sel.substring(0,sel.length - 2)
+            sel = sel.substring(0, sel.length - 2)
             console.log(sel + " DISTINCT FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo")
 
             db.query(sel + " FROM ((SELECT p.dietid, 'furry' AS animaltype, c.info FROM care_package c, furry_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'feathery' AS animaltype, c.info FROM care_package c, feathery_pack p WHERE c.packageid=p.packageid UNION SELECT p.dietid, 'scalie' AS animaltype, c.info FROM care_package c, scalie_pack p WHERE c.packageid=p.packageid) AS t LEFT JOIN diet d ON t.dietid = d.dietid) AS foo", (err, table) => {
@@ -598,7 +598,7 @@ app.post('/api/customers/misc-animal-info', function (req, res) {
 });
 
 app.post('/api/customers/redeem-purrks', function (req, res) {
-    console.log('req: '+req.body)
+    console.log('req: ' + req.body)
     let custid = req.body.custid;
     pool.connect((err, db, done) => {
         console.log('connected\n');
@@ -666,11 +666,11 @@ app.post('/api/animal-filter', function (req, res) {
         }
         else {
             let sel = "";
-            if (filter==="furry") {
+            if (filter === "furry") {
                 sel = "furries";
-            } else if (filter==="feathery") {
+            } else if (filter === "feathery") {
                 sel = "featheries";
-            } else if (filter==="scaly") {
+            } else if (filter === "scaly") {
                 sel = "scalies"
             }
             db.query("SELECT a.animalid, a.name, f.address FROM " + sel + " fur, animal a, fungeon f WHERE a.animalid = fur.animalid AND a.business_license_id = f.business_license_id;", (err, table) => {
@@ -1055,26 +1055,26 @@ app.post('/api/div-payment-method', function (req, res) {
         }
         else {
             let sel = "";
-            if (visa!=="") {
+            if (visa !== "") {
                 if (sel !== "") {
                     console.log('in visa: ' + sel)
                     sel = sel + " OR "
                 }
                 sel = sel + "i.payment_method = \'VISA\'";
             }
-            if (mc!=="" ) {
+            if (mc !== "") {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
                 sel = sel + "i.payment_method = \'MC\'";
             }
-            if (debit!=="") {
+            if (debit !== "") {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
                 sel = sel + "i.payment_method = \'DEBIT\'";
             }
-            if (cash!=="") {
+            if (cash !== "") {
                 if (sel !== "") {
                     sel = sel + " OR "
                 }
@@ -1119,23 +1119,24 @@ select locn, numtransactions
 from fungeontranscount
 where numtransactions = (
     select max(numtransactions)
-    from fungeontranscount);`, (err, table) => {
-        
-                console.log(req.body + '\n');
-                if (err) {
-                    console.log('Query error!\n' + err + '\n');
-                    res.status(500).send('query error!\n');
-                } else {
-                    console.log('Success!');
-                    console.log(res)
-                    if (table && table.rows && table.rows.length != 0) {
-                        res.status(200).send(table.rows);
+    from fungeontranscount)
+    LIMIT 1;`, (err, table) => {
+
+                    console.log(req.body + '\n');
+                    if (err) {
+                        console.log('Query error!\n' + err + '\n');
+                        res.status(500).send('query error!\n');
                     } else {
-                        console.log('nothing');
-                        res.status(400).send('nothing!');
+                        console.log('Success!');
+                        console.log(res)
+                        if (table && table.rows && table.rows.length != 0) {
+                            res.status(200).send(table.rows);
+                        } else {
+                            console.log('nothing');
+                            res.status(400).send('nothing!');
+                        }
                     }
-                }
-            })
+                })
         }
     });
 });
@@ -1155,20 +1156,20 @@ app.get('/api/best_seller', function (req, res) {
                 order by count(t.transid) desc
                 limit 1;
             `, (err, table) => {
-                console.log(req.body + '\n');
-                if (err) {
-                    console.log('Query error!\n' + err + '\n');
-                    res.status(500).send('query error!\n');
-                } else {
-                    console.log('Success!');
-                    if (table && table.rows && table.rows.length != 0) {
-                        res.status(200).send(table.rows);
+                    console.log(req.body + '\n');
+                    if (err) {
+                        console.log('Query error!\n' + err + '\n');
+                        res.status(500).send('query error!\n');
                     } else {
-                        console.log('nothing');
-                        res.status(400).send('nothing!');
+                        console.log('Success!');
+                        if (table && table.rows && table.rows.length != 0) {
+                            res.status(200).send(table.rows);
+                        } else {
+                            console.log('nothing');
+                            res.status(400).send('nothing!');
+                        }
                     }
-                }
-            })
+                })
         }
     });
 });

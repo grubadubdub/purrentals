@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Grid, Card, Segment, Header, Icon, Divider } from 'semantic-ui-react';
 
 class Statistics extends Component {
@@ -13,35 +13,37 @@ class Statistics extends Component {
             bestperformer: null,
         }
     }
-  
+
     componentDidMount() {
         fetch('/api/best_seller')
-        .then(res => {
-            if (res.status === 200) {
-                
-                res.json().then(bestseller => this.setState({ bsName: bestseller[0].name, bsCount: bestseller[0].count, bsID: bestseller[0].animalid }))
-            } else {
-                // alert('something went wrong loading statistic')
-            }
-        })
-        .then(fetch('/api/ytd_sales')
+            .then(res => {
+                if (res.status === 200) {
+
+                    res.json().then(bestseller => this.setState({ bsName: bestseller[0].name, bsCount: bestseller[0].count, bsID: bestseller[0].animalid }))
+                } else {
+                    // alert('something went wrong loading statistic')
+                }
+            })
+        fetch('/api/ytd_sales')
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(ytdsales => this.setState({ ytd: ytdsales[0].sum }))
                 } else {
-                    alert('something went wrong loading statistics')
+                    // alert('something went wrong loading statistics')
                 }
-            }))
-        .then(
-            fetch('/api/fungeon_top')
+            })
+        fetch('/api/fungeon_top')
             .then(res => {
+                // console.log(res.body)
+                console.log(res.body)
                 if (res.status === 200) {
-                    res.json().then(topfungeon => this.setState({ topfungeon: topfungeon }, console.log(topfungeon)))
-                } else {
-                    alert('something went wrong loading statistics')
+                        this.setState({ bestperformer: res.body.rows }, console.log(this.state))
+                    } 
+                    else {
+                    // alert('something went wrong loading statistics')
                 }
-            }))
-}
+            })
+    }
     state = {
         // Best Boi
         BestSellerName: undefined,
@@ -75,7 +77,7 @@ class Statistics extends Component {
     //     fetch('/bestseller')
     //         .then(res => res.json())
     //         .then(bestseller => this.setState({ animals: bestseller.rows }))
-        
+
     //     // fetch least bought animal
     //     fetch('/worst_seller')
     //         .then(res => res.json())
@@ -106,17 +108,17 @@ class Statistics extends Component {
     // Create card for summary view
     createCard = (name, attr1, attr2, attr3) => {
         let card = (
-        <Card>
-            <Card.Content header={name} />
-            <Card.Content>
-                <Card.Meta><span>{attr1}</span></Card.Meta>
-                <Card.Meta><span>{attr2}</span></Card.Meta>
-            </Card.Content>
-            <Card.Content extra>
-                <Icon name='user' />
-                {attr3}
+            <Card>
+                <Card.Content header={name} />
+                <Card.Content>
+                    <Card.Meta><span>{attr1}</span></Card.Meta>
+                    <Card.Meta><span>{attr2}</span></Card.Meta>
                 </Card.Content>
-        </Card>)
+                <Card.Content extra>
+                    <Icon name='user' />
+                    {attr3}
+                </Card.Content>
+            </Card>)
 
         return card;
     }
@@ -125,7 +127,7 @@ class Statistics extends Component {
         let dues = this.state.DueDates;
         let dates = [];
 
-        for(let i=0; i <= 5; i++) {
+        for (let i = 0; i <= 5; i++) {
             //dates.push(this.createCard(dues[i].name, dues[i].fungeon, dues[i].duedate, dues[i].customer)); 
         }
 
@@ -133,7 +135,7 @@ class Statistics extends Component {
     }
 
     render() {
-        return(
+        return (
             <Grid columns={3} divided>
                 <Grid.Row stretched>
 
@@ -151,17 +153,17 @@ class Statistics extends Component {
                             {this.createCard('Ho Li Fuk', 'From Fungeon x', 'Due by', 'Rented by')}
                             {this.createCard('Kyons Dildo', 'From fungeon y', 'Due by', 'Who rented me')}
                             {this.createCard('Gag Ball', 'From my sex dungeon', 'Due by', 'Who rented this shit')}
-                        </Card.Group>   
+                        </Card.Group>
                     </Grid.Column>
 
                     <Grid.Column>
                         <div>
-                        <Segment circular inverted color='olive' style={{width: 175, height: 175}}>
-                            <Header as='h2' inverted>
-                                YTD Sales
+                            <Segment circular inverted color='olive' style={{ width: 175, height: 175 }}>
+                                <Header as='h2' inverted>
+                                    YTD Sales
                                 <Header.Subheader>${this.state.ytd}</Header.Subheader>
-                            </Header>
-                        </Segment>
+                                </Header>
+                            </Segment>
                         </div>
 
                         <h3>Greatest Sale</h3> <Divider />

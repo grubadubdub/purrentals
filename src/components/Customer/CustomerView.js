@@ -8,39 +8,13 @@ import 'semantic-ui-css/semantic.min.css';
 import TAnimalInfo from './HomeTabs/TAnimalInfo';
 
 class CustomerView extends Component {
-    // panes = [
-    //     {
-    //     menuItem: 'Animals',
-    //         pane: {
-    //             key: 'animals',
-    //             content: ( 
-    //             <div><Posting /></div>
-    //             ),
-    //         },
-    //     },
-    //     { 
-    //     menuItem: 'My Account', 
-    //         pane: {
-    //             key: 'account', 
-    //             content: (
-    //             <div><AccountGrid /></div>
-    //             ),
-    //         },
-    //     },
-    //     {
-    //     menuItem: 'Statistics',
-    //         pane: {
-    //             key: 'stats',
-    //             content: (
-    //                 <div><Statistics /></div>
-    //             ),
-    //         },
-    //     },
-    // ]
-    state = { custid: this.props.location.state }
+    state = { 
+        custid: this.props.location.state.custid,
+        name: this.props.location.state.name
+         }
+
 
     render() {
-
         return (
             <Tab
                 menu={{ fluid: true, vertical: true, tabular: true }}
@@ -50,7 +24,7 @@ class CustomerView extends Component {
                         pane: {
                             key: 'animals',
                             content: (
-                                <div><Posting custid={this.state.custid}/></div>
+                                <div><Posting custid={this.state.custid} name={this.state.name} /></div>
                             ),
                         },
                     },
@@ -59,7 +33,7 @@ class CustomerView extends Component {
                         pane: {
                             key: 'animalinfo',
                             content: (
-                                <div><TAnimalInfo custid={this.state.custid} /></div>
+                                <div><TAnimalInfo custid={this.state.custid} name={this.state.name} /></div>
                             ),
                         },
                     },
@@ -68,7 +42,7 @@ class CustomerView extends Component {
                         pane: {
                             key: 'account',
                             content: (
-                                <div><AccountGrid custid={this.state.custid} /></div>
+                                <div><AccountGrid custid={this.state.custid} name={this.state.name} /></div>
                             ),
                         },
                     },

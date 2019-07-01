@@ -11,7 +11,7 @@ class Posting extends Component {
         this.state = {
             animals: [],
             custid: this.props.custid,
-            filter: null,
+            filter: null
         }
     }
 
@@ -67,6 +67,7 @@ class Posting extends Component {
                 }
             })
     }
+
     createItem = () => {
         let animals = this.state.animals
         if (animals.length > 1) {

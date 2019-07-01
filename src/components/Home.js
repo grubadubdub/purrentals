@@ -18,7 +18,7 @@ const Home = () => {
 								<Icon name='shop' />
 							</Header>
 
-							<NavLink to='/customer-login'>
+							<NavLink to='/login'>
                                 <Button primary> Customer </Button>
                             </NavLink>
 							<Divider>

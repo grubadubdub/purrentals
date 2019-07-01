@@ -22,7 +22,7 @@ class CustSignUp extends Component {
 
   async makeFetch(data) {
     const { history } = this.props
-    const res = await axios.post('/api/customers/signup', data);
+    const res = await axios.post('/api/customers/add', data);
     history.push('/customer-login')
   }
 
@@ -35,12 +35,20 @@ class CustSignUp extends Component {
         <Grid.Row centered>
           <Form>
             <Form.Field>
-              <label htmlFor="custid">Enter a 3 Digit Number CustID:</label>
-              <input type='text' name='custid' placeholder='CustID' onChange={this.handleTextChange} />
+              <label htmlFor="username">Username:</label>
+              <input type='text' name='username' placeholder='Username' onChange={this.handleTextChange} />
             </Form.Field>
             <Form.Field>
-              <label htmlFor="name">Name:</label>
-              <input type='text' name='name' placeholder='Name' onChange={this.handleTextChange} />
+              <label htmlFor="password">Password:</label>
+              <input type='text' name='password' placeholder='Password' onChange={this.handleTextChange} />
+            </Form.Field>
+            <Form.Field>
+              <label htmlFor="fname">First name:</label>
+              <input type='text' name='fname' placeholder='First name' onChange={this.handleTextChange} />
+            </Form.Field>
+            <Form.Field>
+              <label htmlFor="lname">Last name:</label>
+              <input type='text' name='lname' placeholder='Last name' onChange={this.handleTextChange} />
             </Form.Field>
             <Form.Field>
               <label htmlFor="address">Address:</label>
@@ -51,7 +59,7 @@ class CustSignUp extends Component {
               <input type='text' name='pnum' placeholder='Phone Number' onChange={this.handleTextChange} />
             </Form.Field>
             <Form.Field>
-              <Checkbox label='I agree to the Terms and Conditions, like do I even ohmagaaaawd' />
+              <Checkbox checked='false' label='I agree to the Terms and Conditions. Sign my soul away.' />
             </Form.Field>
             {/* <Link to='/customer-login'> */}
             <Button onClick={() => {this.makeFetch(this.state)}}> Submit </Button>

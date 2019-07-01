@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import { Grid, Item, Button, Label, Icon, Divider, } from 'semantic-ui-react';
 
 class AccountGrid extends Component {
-    state = { custid: this.props.custid }
+    state = { 
+        custid: this.props.custid,
+        name: this.props.name
+     }
 
     render() {
         return (
@@ -12,7 +15,7 @@ class AccountGrid extends Component {
                 <Grid.Row stretched>
 
                     <Grid.Column>
-                        <AccountCard custid={this.state.custid} />
+                        <AccountCard name={this.state.name} />
 
                         Current Purrks: None redeemed yet
                     <Link to={{pathname:'/customer-redeempurrks', state: this.state.custid}}>

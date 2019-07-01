@@ -34,7 +34,7 @@ class ui_test extends Component {
 				<div>
 					<Route path="/" component={Home} exact />
 					<Route path="/customer" component={CustomerView} exact />					
-					<Route path='/customer-login' component={Login} />
+					<Route path='/login' component={Login} />
 					<Route path="/customer-signup" component={CustSignUp}/>
 					<Route path='/customer-invoices' component={viewInvoices}/>
 					<Route path='/customer-update' component={CustUpdate} />

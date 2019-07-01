@@ -6,10 +6,10 @@ const PORT = 9999
 let pool = new pg.Pool({
     host: 'localhost',
     user: 'postgres',
-    password: 'honeypot',
+    password: 'cs304',
     database: 'purrentals',
     max: 19, // max 10 connections
-    port: 8888
+    port: 5432
     // IF YOU GET ECONNECT ERROR AGAIN CHANGE TO 5432
 })
 
@@ -160,26 +160,27 @@ app.post('/api/animals', function (req, res) {
 
 // WORKING ENDPOINTSSSSSSS ----------------------------
 app.post('/api/customers/login', function (req, res) {
-    console.log('request body: ' + req.body.custid);
-    let custid = req.body.custid;
+    console.log('request body: ' + req.body.username);
+    let username = req.body.username;
+    let password = req.body.password;
     console.log('customer login\n');
     pool.connect((err, db, done) => {
-        console.log('connected\n');
+        console.log('/login connected\n');
         if (err) {
             console.error('error fetching data\n' + err)
             res.send(500, err)
             // res.status(500).send()
         }
         else {
-            db.query("SELECT * FROM customer WHERE custid = " + custid + ";", (err, table) => {
-                console.log(req.body + '\n');
+            console.log("SELECT * FROM customer WHERE username = \'" + username + "\' AND password = \'" + password + "\'");
+            db.query("SELECT * FROM customer WHERE username = \'" + username + "\' AND password = \'" + password + "\'", (err, table) => {
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
                     res.status(500).send('query error!\n');
                 } else {
                     if (table && table.rows && table.rows.length != 0) {
                         console.log('custid was found!\n');
-                        res.status(200).send(custid);
+                        res.status(200).send(table.rows);
                     } else {
                         console.log('custid was NOT found!\n');
                         res.status(400).send(false);
@@ -216,8 +217,9 @@ app.post('/api/customers/add', function (req, res) {
 });
 
 app.post('/api/customers/login', function (req, res) {
-    console.log('request body: ' + req.body.custid);
-    let custid = req.body.custid;
+    console.log('request body: ' + req);
+    let username = req.body.username;
+    let password = req.body.password;
     console.log('customer login\n');
     pool.connect((err, db, done) => {
         console.log('connected\n');
@@ -227,7 +229,7 @@ app.post('/api/customers/login', function (req, res) {
             // res.status(500).send()
         }
         else {
-            db.query("SELECT * FROM customer WHERE custid = " + custid + ";", (err, table) => {
+            db.query("SELECT * FROM customer WHERE username = " + username + " AND password =" + password, (err, table) => {
                 console.log(req.body + '\n');
                 if (err) {
                     console.log('Query error!\n' + err + '\n');
@@ -1125,23 +1127,19 @@ where numtransactions = (
                     console.log('Query error!\n' + err + '\n');
                     res.status(500).send('query error!\n');
                 } else {
-                    console.log('Success!');
+                    console.log('Query success!');
                     // console.log(res)
                     if (table && table.rows && table.rows.length != 0) {
                         res.status(200).send(table.rows);
                     } else {
-                        console.log('Success!');
-                        console.log(res)
-                        if (table && table.rows && table.rows.length != 0) {
-                            res.status(200).send(table.rows);
-                        } else {
-                            console.log('nothing');
-                            res.status(400).send('nothing!');
-                        }
+                        console.log('nothing');
+                        res.status(400).send('nothing!');
                     }
-                })
+                }
+            })
         }
-    });
+    })
+
 });
 
 app.get('/api/best_seller', function (req, res) {
